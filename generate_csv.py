@@ -2,6 +2,8 @@ from csv import DictReader, DictWriter
 from tqdm import tqdm
 import os
 import shutil
+from openfisca_uk.tools.simulation import model
+import numpy as np
 
 BENEFITS = {
     1: "DLA_SC",
@@ -63,9 +65,9 @@ PERSON_FIELDNAMES = [
     "is_male",
     "age",
     "is_head",
-    "salary",
+    "employee_earnings",
     "deductions",
-    "profit",
+    "self_employed_earnings",
     "pension_income",
     "total_benefits",
     "interest",
@@ -75,12 +77,16 @@ PERSON_FIELDNAMES = [
     "JSA_contrib_eligible",
     "disabled",
     "adult_weight",
-    "hours_worked"
+    "hours_worked",
+    "actual_net_income",
+    "student_loan_repayments",
+    "net_income_adjustment"
 ] + list(BENEFITS.values())
 
 BENUNIT_FIELDNAMES = [
     "benunit_id",
-    "benunit_weight"
+    "benunit_weight",
+    "external_child_maintenance"
 ]
 
 HOUSEHOLD_FIELDNAMES = [
@@ -188,10 +194,13 @@ def parse_adult(line, person):
     person["is_male"] = line["SEX"] == "1"
     person["age"] = AGES[int(line["IAGEGR4"])]
     person["misc_income"] = safe(line["NINRINC"])
+    person["student_loan_repayments"] = safe(line["SLREPAMT"])
     person["hours_worked"] = safe(line["TOTHOURS"])
     person["disabled"] = line["DISACTA1"] == "1"
     person["adult_weight"] = float(line["GROSS4"])
     person["is_head"] = line["COMBID"] == "1"
+    person["actual_net_income"] = safe(line["NINDINC"]) - safe(line["NINRINC"])
+    person["self_employed_earnings"] = safe(line["SEINCAM2"])
     return person
 
 def parse_child(line, person):
@@ -202,13 +211,12 @@ def parse_child(line, person):
     person["is_male"] = line["SEX"] == "1"
     person["age"] = AGES[int(line["IAGEGRP"])]
     person["misc_income"] = safe(line["CHRINC"])
-    person["disabled"] = line["DISACTC1"] == "1",
+    person["disabled"] = line["DISACTC1"] == "1"
     return person
 
 def parse_job(line, person):
-    person["salary"] += safe(line["UGROSS"], line["GRWAGE"])
+    person["employee_earnings"] += safe(line["UGROSS"], line["GRWAGE"])
     person["deductions"] += add_up(line, "DEDOTH", "DEDUC1", "DEDUC2", "DEDUC3", "DEDUC4", "DEDUC5", "DEDUC6", "DEDUC7", "DEDUC8", "DEDUC9") - add_up(line, "UMILEAMT", "UMOTAMT")
-    person["profit"] += safe(line["PRBEFORE"])
     return person
 
 def parse_account(line, person):
@@ -264,9 +272,34 @@ def parse_household(line, household):
     band = int(safe(line["CTBAND"]))
     household["council_tax"] = safe(line["CTANNUAL"], AVERAGE_COUNCIL_TAX[band - 1]) / 52
     household["housing_costs"] = safe(line["GBHSCOST"]) + safe(line["NIHSCOST"])
-    household["service_charges"] = safe(line["CHRGAMT1"]) + safe(line["CHRGAMT3"]) + safe(line["CHRGAMT4"]) + safe(line["CHRGAMT5"]) + safe(line["CHRGAMT6"]) + safe(line["CHRGAMT7"]) + safe(line["CHRGAMT8"]) + safe(line["CHRGAMT9"]) + safe(line["RTANNUAL"])
+    household["service_charges"] = 0
     household["household_weight"] = float(line["GROSS4"])
     return household
+
+def parse_extchild(line, benunit):
+    benunit["external_child_maintenance"] = safe(line["NHHAMT"])
+    return benunit
+
+def adjust_net_income():
+    sim = model(data_dir="output")
+    simulated_net_income = sim.calculate("net_income", "2020-10")
+    person_data = {}
+    with open("output\\person.csv") as f:
+        next(f)
+        reader = DictReader(f, fieldnames=PERSON_FIELDNAMES)
+        for row in tqdm(reader, desc="Reading person.csv"):
+            person_data[row["person_id"]] = row
+    actual_net_income = np.array([float(person["actual_net_income"]) for person in person_data.values()])
+    error = simulated_net_income - actual_net_income
+    adjustment = np.where(np.abs(error) > 200, -error, 0)
+    person_ids = list(person_data.keys())
+    for i, person_id in tqdm(zip(range(len(person_ids)), person_ids), desc="Storing net income adjustments"):
+        person_data[person_id]["net_income_adjustment"] = adjustment[i]
+    with open("output\\person.csv", "w+", encoding="utf-8", newline="") as f:
+        writer = DictWriter(f, fieldnames=PERSON_FIELDNAMES)
+        writer.writeheader()
+        for person in person_data.values():
+            writer.writerow(person)
 
 def get_person_data():
     """
@@ -282,9 +315,11 @@ def get_person_data():
     person_data = parse_file("maint.tab", person_id, parse_maintenance, initial_fields=PERSON_FIELDNAMES, data=person_data)
     write_file(person_data, "person.csv", PERSON_FIELDNAMES)
     benunit_data = parse_file("benunit.tab", benunit_id, parse_benunit, initial_fields=BENUNIT_FIELDNAMES, data={})
+    benunit_data = parse_file("extchild.tab", benunit_id, parse_extchild, initial_fields=BENUNIT_FIELDNAMES, data=benunit_data)
     write_file(benunit_data, "benunit.csv", BENUNIT_FIELDNAMES)
     household_data = parse_file("househol.tab", household_id, parse_household, initial_fields=HOUSEHOLD_FIELDNAMES, data={})
     write_file(household_data, "household.csv", HOUSEHOLD_FIELDNAMES)
+    adjust_net_income()
 
 clean_dirs("output")
 get_person_data()

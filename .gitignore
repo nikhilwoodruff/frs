@@ -1,3 +1,4 @@
 data/*.tab
 output/*.csv
+output/README.md
 .vscode/
