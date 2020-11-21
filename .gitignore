@@ -1,4 +1,6 @@
 data/*.tab
+data/README.md
 frs/*.csv
+frs/README.md
 .vscode/
 **/*.pyc
