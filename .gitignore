@@ -1,4 +1,4 @@
 data/*.tab
-output/*.csv
-output/README.md
+frs/*.csv
 .vscode/
+**/*.pyc
