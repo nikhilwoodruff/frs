@@ -139,10 +139,10 @@ def write_file(data, filename, fieldnames):
             writer.writerow(item)
 
 def person_id(line):
-    return int(line["sernum"]) * 100000 + int(line["PERSON"])
+    return 1000000 + int(line["sernum"]) * 10 + int(line["PERSON"])
 
 def household_id(line):
-    return int(line["sernum"])
+    return 1000000 + int(line["sernum"]) * 10
 
 def parse_adult(line, person):
     person["person_id"] = person_id(line)
@@ -159,8 +159,8 @@ def parse_adult(line, person):
     person["savings_interest"] = adjust_period(line["ININV"], WEEK, YEAR)
     person["misc_income"] = adjust_period(line["INRINC"], WEEK, YEAR)
     person["total_benefits"] = add_up(line, "INDISBEN", "INOTHBEN", "INTXCRED", "INRPINC", "INDUC")
-    person["is_household_head"] = int(line["COMBID"]) == 1
-    person["is_benunit_head"] = int((line["COMBID"] == "1") or (line["UPERSON"] == "1"))
+    person["is_household_head"] = int(line["PERSON"]) == 1
+    person["is_benunit_head"] = int(line["UPERSON"]) == 1
     person["FRS_net_income"] = adjust_period(safe(line["NINDINC"]), WEEK, YEAR) - person["misc_income"]
     return person
 
@@ -178,6 +178,8 @@ def parse_child(line, person):
     person["misc_income"] = adjust_period(line["CHRINC"], WEEK, YEAR)
     person["earnings"] = adjust_period(line["CHEARNS"], WEEK, YEAR)
     person["FRS_net_income"] = safe(line["CHINCDV"]) - person["misc_income"]
+    person["is_benunit_head"] = False
+    person["is_household_head"] = False
     return person
 
 def parse_job(line, person):
@@ -221,7 +223,7 @@ def parse_pension(line, person):
     return person
 
 def benunit_id(line):
-    return int(line["sernum"]) * 100000 + int(line["BENUNIT"])
+    return 1000000 + int(line["sernum"]) * 10 + int(line["BENUNIT"])
 
 def parse_benunit(line, benunit):
     benunit["benunit_id"] = benunit_id(line)
