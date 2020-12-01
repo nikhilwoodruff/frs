@@ -149,4 +149,8 @@ GOVTREGNO = {
     13: "NORTHERN_IRELAND",
 }
 
+REGIONS_TO_NUM = {
+    region: i for region, i in zip(GOVTREGNO.values(), range(len(GOVTREGNO)))
+}
+
 AVERAGE_COUNCIL_TAX = [1114, 1300, 1486, 1671, 2043, 2414, 2786, 3343, 3900, 0]

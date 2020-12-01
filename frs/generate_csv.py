@@ -3,7 +3,9 @@ from tqdm import tqdm
 import os
 import shutil
 import numpy as np
-from frs_params import *
+from frs.frs_params import *
+import sys
+import pandas as pd
 
 PERSON_FIELDNAMES = (
     [
@@ -25,6 +27,8 @@ PERSON_FIELDNAMES = (
         "is_household_head",
         "is_benunit_head",
         "FRS_net_income",
+        "maintenance_payments",
+        "student_loan_repayment",
     ]
     + [
         benefit
@@ -133,7 +137,7 @@ def parse_file(
     """
     if desc is None:
         desc = f"Reading {filename}"
-    with open(os.path.join("data", filename), encoding="utf-8") as f:
+    with open(os.path.join(resolve("raw"), filename), encoding="utf-8") as f:
         reader = DictReader(f, fieldnames=next(f).split("\t"), delimiter="\t")
         for line in tqdm(reader, desc=desc):
             if multiple_levels:
@@ -173,7 +177,7 @@ def write_file(data, filename, fieldnames):
     Write a data dictionary to a CSV file.
     """
     with open(
-        os.path.join("frs", filename), "w+", encoding="utf-8", newline=""
+        os.path.join(resolve("csv"), filename), "w+", encoding="utf-8", newline=""
     ) as f:
         writer = DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
@@ -207,7 +211,7 @@ def parse_adult(line, person):
     person["savings_interest"] = adjust_period(line["ININV"], WEEK, YEAR)
     person["misc_income"] = adjust_period(line["INRINC"], WEEK, YEAR)
     person["total_benefits"] = add_up(
-        line, "INDISBEN", "INOTHBEN", "INTXCRED", "INRPINC", "INDUC"
+        line, "INDISBEN", "INOTHBEN", "INTXCRED", "INDUC"
     )
     person["is_household_head"] = int(line["PERSON"]) == 1
     person["is_benunit_head"] = int(line["UPERSON"]) == 1
@@ -215,6 +219,7 @@ def parse_adult(line, person):
         adjust_period(safe(line["NINDINC"]), WEEK, YEAR)
         - person["misc_income"]
     )
+    person["student_loan_repayment"] = safe(line["SLREPAMT"])
     return person
 
 
@@ -251,6 +256,7 @@ def parse_asset(line, person):
 
 
 def parse_maintenance(line, person):
+    person["maintenance_payments"] = safe(line["MRUAMT"], line["MRAMT"])
     return person
 
 
@@ -305,11 +311,11 @@ def parse_household(line, household):
         line["NIHSCOST"]
     )
     band = int(safe(line["CTBAND"]))
-    household["council_tax"] = (
-        safe(line["CTANNUAL"], AVERAGE_COUNCIL_TAX[band - 1]) / 52
+    household["council_tax"] = safe(
+        line["CTANNUAL"], AVERAGE_COUNCIL_TAX[band - 1]
     )
     household["is_social"] = safe(line["PTENTYP2"]) in [1, 2]
-    household["region"] = GOVTREGNO[int(line["GVTREGNO"])]
+    household["region"] = REGIONS_TO_NUM[GOVTREGNO[int(line["GVTREGNO"])]]
     return household
 
 
@@ -317,9 +323,9 @@ def parse_extchild(line, benunit):
     return benunit
 
 
-def get_person_data():
+def write_files():
     """
-    Return a dictionary of person-level data.
+    Write OpenFisca-UK input CSV files.
     """
     person_data = parse_file(
         "adult.tab",
@@ -410,6 +416,38 @@ def get_person_data():
     )
     write_file(household_data, "household.csv", HOUSEHOLD_FIELDNAMES)
 
+def resolve(filename):
+    return os.path.join(os.path.dirname(__file__), filename)
 
-clean_dirs("frs")
-get_person_data()
+def ensure_folders_exist():
+    path = os.path.dirname(__file__)
+    if "csv" not in os.listdir(path):
+        os.makedirs(os.path.join(path, "csv"))
+    if "raw" not in os.listdir(path):
+        os.makedirs(os.path.join(path, "raw"))
+
+def main():
+    ensure_folders_exist()
+    existing = os.listdir(resolve("raw"))
+    if not existing and len(sys.argv) < 2:
+        print("No FRS data found; run the command 'frs [PATH TO FRS TAB FILES]'.")
+        exit()
+    if len(sys.argv) > 1:
+        folder_path = sys.argv[1]
+        for filename in tqdm(os.listdir(folder_path), desc="Loading FRS files"):
+            if filename[-4:].lower() == ".tab":
+                shutil.copyfile(os.path.join(folder_path, filename), os.path.join(resolve("raw"), filename))
+    print("Generating OpenFisca-UK input datasets.")
+    write_files()
+
+def load():
+    ensure_folders_exist()
+    if not os.listdir(resolve("csv")) and not os.listdir(resolve("raw")):
+        print("No OpenFisca-UK input files found, and no FRS source data found either. Load the TAB files with 'frs [PATH]'.")
+        exit()
+    elif not os.listdir(resolve("csv")):
+        print(os.listdir(resolve("csv")))
+        print("No OpenFisca-UK-compatible data files found, regenerating from FRS TAB sources.")
+        write_files()
+    return [pd.read_csv(resolve(os.path.join("csv", filename))) for filename in ("person.csv", "benunit.csv", "household.csv")]
+        
