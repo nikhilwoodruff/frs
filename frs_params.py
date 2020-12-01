@@ -9,7 +9,7 @@ CARE_HOURS_CODES = {
     7: 100,
     8: 10,
     9: 30,
-    10: 35
+    10: 35,
 }
 
 BENEFITS = {
@@ -56,15 +56,10 @@ BENEFITS = {
     99: "LA_loan",
     95: "universal_credit",
     96: "PIP_DL",
-    97: "PIP_M"
+    97: "PIP_M",
 }
 
-COUNTRY = {
-    1: "ENGLAND",
-    2: "WALES",
-    3: "SCOTLAND",
-    4: "NI"
-}
+COUNTRY = {1: "ENGLAND", 2: "WALES", 3: "SCOTLAND", 4: "NI"}
 
 WEEK = 1
 MONTH = 5
@@ -77,7 +72,7 @@ JSA_ESA_TYPES = {
     3: "contrib",
     4: "contrib",
     5: "contrib",
-    6: "contrib"
+    6: "contrib",
 }
 
 SIMULATED = [
@@ -90,7 +85,7 @@ SIMULATED = [
     "pension_credit",
     "universal_credit",
     "child_benefit",
-    "child_benefit"
+    "child_benefit",
 ]
 
 BENUNIT_LEVEL_BENEFITS = [
@@ -102,7 +97,7 @@ BENUNIT_LEVEL_BENEFITS = [
     "housing_benefit",
     "pension_credit",
     "universal_credit",
-    "child_benefit"
+    "child_benefit",
 ]
 
 REPORTED = [
@@ -121,7 +116,7 @@ REPORTED = [
     "IIDB"
 ]
 
-period_codes = {
+PERIOD_CODES = {
     1: 1,
     2: 2,
     3: 3,
@@ -137,7 +132,7 @@ period_codes = {
     52: 52,
     90: 0.5,
     95: 1000,
-    97: 1000
+    97: 1000,
 }
 
 GOVTREGNO = {
@@ -152,18 +147,7 @@ GOVTREGNO = {
     10: "SOUTH_WEST",
     11: "WALES",
     12: "SCOTLAND",
-    13: "NORTHERN_IRELAND"
+    13: "NORTHERN_IRELAND",
 }
 
-AVERAGE_COUNCIL_TAX = [
-    1114,
-    1300,
-    1486,
-    1671,
-    2043,
-    2414,
-    2786,
-    3343,
-    3900,
-    0
-]
+AVERAGE_COUNCIL_TAX = [1114, 1300, 1486, 1671, 2043, 2414, 2786, 3343, 3900, 0]
