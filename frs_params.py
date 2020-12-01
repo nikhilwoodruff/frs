@@ -117,7 +117,8 @@ REPORTED = [
     "ESA_contrib",
     "state_pension",
     "PIP_DL",
-    "PIP_M"
+    "PIP_M",
+    "IIDB"
 ]
 
 period_codes = {
