@@ -1,3 +1,68 @@
+
+PERSON_FIELDNAMES = (
+    [
+        "person_id",
+        "benunit_id",
+        "household_id",
+        "role",
+        "adult_weight",
+        "earnings",
+        "profit",
+        "childcare",
+        "pension_income",
+        "age",
+        "care_hours",
+        "hours",
+        "savings_interest",
+        "misc_income",
+        "total_benefits",
+        "is_household_head",
+        "is_benunit_head",
+        "FRS_net_income",
+        "maintenance_payments",
+        "student_loan_repayment",
+    ]
+    + [
+        benefit
+        for benefit in BENEFITS.values()
+        if benefit not in BENUNIT_LEVEL_BENEFITS and benefit in REPORTED
+    ]
+    + [
+        benefit + "_reported"
+        for benefit in BENEFITS.values()
+        if benefit not in BENUNIT_LEVEL_BENEFITS
+        and benefit in SIMULATED
+        and benefit
+    ]
+)
+
+BENUNIT_FIELDNAMES = (
+    ["benunit_id", "benunit_weight"]
+    + [
+        benefit
+        for benefit in BENEFITS.values()
+        if benefit in BENUNIT_LEVEL_BENEFITS and benefit in REPORTED
+    ]
+    + [
+        benefit + "_reported"
+        for benefit in BENEFITS.values()
+        if benefit in BENUNIT_LEVEL_BENEFITS and benefit in SIMULATED
+    ]
+)
+
+HOUSEHOLD_FIELDNAMES = [
+    "household_id",
+    "household_weight",
+    "country",
+    "rent",
+    "is_shared",
+    "housing_costs",
+    "is_social",
+    "num_rooms",
+    "region",
+    "council_tax",
+]
+
 CARE_HOURS_CODES = {
     0: 0,
     1: 2,
