@@ -433,6 +433,9 @@ def main():
         print("No FRS data found; run the command 'frs [PATH TO FRS TAB FILES]'.")
         exit()
     if len(sys.argv) > 1:
+        if os.path.exists(resolve("raw")):
+            shutil.rmtree(resolve("raw"))
+            os.makedirs(resolve("raw"))
         folder_path = sys.argv[1]
         for filename in tqdm(os.listdir(folder_path), desc="Loading FRS files"):
             if filename[-4:].lower() == ".tab":
