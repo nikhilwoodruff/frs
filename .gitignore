@@ -1,6 +1,6 @@
-data/*.tab
+**/*.tab
 data/README.md
-frs/*.csv
+**/*.csv
 frs/README.md
 .vscode/
 **/*.pyc
