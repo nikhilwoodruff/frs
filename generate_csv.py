@@ -25,6 +25,9 @@ PERSON_FIELDNAMES = (
         "is_household_head",
         "is_benunit_head",
         "FRS_net_income",
+        "registered_disabled",
+        "dis_equality_act_core",
+        "dis_equality_act_wider"
     ]
     + [
         benefit
@@ -215,6 +218,9 @@ def parse_adult(line, person):
         adjust_period(safe(line["NINDINC"]), WEEK, YEAR)
         - person["misc_income"]
     )
+    person["registered_disabled"] = safe(line["LAREG"]) == 1
+    person["dis_equality_act_core"] = safe(line["DISCORA1"]) == 1
+    person["dis_equality_act_wider"] = safe(line["DISACTA1"]) == 1
     return person
 
 
@@ -233,6 +239,9 @@ def parse_child(line, person):
     person["misc_income"] = adjust_period(line["CHRINC"], WEEK, YEAR)
     person["earnings"] = adjust_period(line["CHEARNS"], WEEK, YEAR)
     person["FRS_net_income"] = safe(line["CHINCDV"]) - person["misc_income"]
+    person["registered_disabled"] = safe(line["LAREG"]) == 1
+    person["dis_equality_act_core"] = safe(line["DISCORC1"]) == 1
+    person["dis_equality_act_wider"] = safe(line["DISACTC1"]) == 1
     person["is_benunit_head"] = False
     person["is_household_head"] = False
     return person

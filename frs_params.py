@@ -113,6 +113,7 @@ REPORTED = [
     "state_pension",
     "PIP_DL",
     "PIP_M",
+    "IIDB"
 ]
 
 PERIOD_CODES = {
