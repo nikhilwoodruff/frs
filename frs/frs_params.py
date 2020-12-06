@@ -138,6 +138,8 @@ PERSON_FIELDNAMES = (
         "FRS_net_income",
         "maintenance_payments",
         "student_loan_repayment",
+        "is_adult",
+        "is_child"
     ]
     + [
         benefit

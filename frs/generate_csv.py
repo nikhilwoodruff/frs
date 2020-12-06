@@ -141,6 +141,8 @@ def household_id(line):
 
 def parse_adult(line, person):
     person["person_id"] = person_id(line)
+    person["is_adult"] = True
+    person["is_child"] = False
     person["benunit_id"] = benunit_id(line)
     person["household_id"] = household_id(line)
     person["adult_weight"] = safe(line["GROSS4"])
@@ -174,6 +176,8 @@ def parse_childcare(line, person):
 
 def parse_child(line, person):
     person["person_id"] = person_id(line)
+    person["is_adult"] = False
+    person["is_child"] = True
     person["benunit_id"] = benunit_id(line)
     person["household_id"] = household_id(line)
     person["role"] = "child"
