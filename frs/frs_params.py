@@ -113,6 +113,7 @@ REPORTED = [
     "state_pension",
     "PIP_DL",
     "PIP_M",
+    "IIDB"
 ]
 
 
@@ -139,7 +140,10 @@ PERSON_FIELDNAMES = (
         "maintenance_payments",
         "student_loan_repayment",
         "is_adult",
-        "is_child"
+        "is_child",
+        "registered_disabled",
+        "dis_equality_act_core",
+        "dis_equality_act_wider"
     ]
     + [
         benefit
