@@ -11,9 +11,11 @@ from colorama import init, Fore
 from termcolor import colored
 import json
 import warnings
+
 init()
 
 __version__ = "0.2.0"
+
 
 def clean_dirs(output_dir):
     """
@@ -120,7 +122,10 @@ def write_file(data, filename, fieldnames):
     Write a data dictionary to a CSV file.
     """
     with open(
-        os.path.join(resolve("csv"), filename), "w+", encoding="utf-8", newline=""
+        os.path.join(resolve("csv"), filename),
+        "w+",
+        encoding="utf-8",
+        newline="",
     ) as f:
         writer = DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
@@ -371,8 +376,10 @@ def write_files():
     with open(resolve("metadata.json"), "w+") as f:
         json.dump(dict(version=__version__), f)
 
+
 def resolve(filename):
     return os.path.join(os.path.dirname(__file__), filename)
+
 
 def ensure_folders_exist():
     path = os.path.dirname(__file__)
@@ -381,13 +388,22 @@ def ensure_folders_exist():
     if "raw" not in os.listdir(path):
         os.makedirs(os.path.join(path, "raw"))
 
+
 def main():
     ensure_folders_exist()
     existing_raw = os.listdir(resolve("raw"))
     existing_csv = os.listdir(resolve("csv"))
-    parser = argparse.ArgumentParser(description="Utility for managing Family Resources Survey microdata")
-    parser.add_argument("mode", choices=["status", "gen", "regen"], help="The action to take on stored data")
-    parser.add_argument("--path", required=False, help="The path to the FRS data")
+    parser = argparse.ArgumentParser(
+        description="Utility for managing Family Resources Survey microdata"
+    )
+    parser.add_argument(
+        "mode",
+        choices=["status", "gen", "regen"],
+        help="The action to take on stored data",
+    )
+    parser.add_argument(
+        "--path", required=False, help="The path to the FRS data"
+    )
     args = parser.parse_args()
     if args.mode == "status":
         print("FRS status:")
@@ -408,39 +424,61 @@ def main():
                 gen_version = json.load(f)["version"]
             outdated = current_version != gen_version
             if not outdated:
-                print(colored("No", "green") + f" (files generated with current version, {current_version})")
+                print(
+                    colored("No", "green")
+                    + f" (files generated with current version, {current_version})"
+                )
             else:
-                print(colored("Yes", "red") + f" (generated with {gen_version}, current is {current_version})")
+                print(
+                    colored("Yes", "red")
+                    + f" (generated with {gen_version}, current is {current_version})"
+                )
         else:
             print(colored("N/A", "yellow"))
     elif args.mode == "gen":
         if not args.path or not os.path.exists(args.path):
             print("Please specify a valid path to FRS TAB files.")
             return
-        filenames = [filename for filename in os.listdir(args.path) if filename[-4:].lower() == ".tab"]
+        filenames = [
+            filename
+            for filename in os.listdir(args.path)
+            if filename[-4:].lower() == ".tab"
+        ]
         if not filenames:
             print("No FRS files were found.")
             return
         for filename in tqdm(filenames, desc="Storing FRS files"):
-            shutil.copyfile(os.path.join(args.path, filename), os.path.join(resolve("raw"), filename))
+            shutil.copyfile(
+                os.path.join(args.path, filename),
+                os.path.join(resolve("raw"), filename),
+            )
         print("Stored FRS source files successfully.")
         print("Generating OpenFisca-UK input datasets:")
         write_files()
         print("Completed generation.")
     elif args.mode == "regen":
         if not existing_raw:
-            print("No FRS source data stored; use 'frs gen --path [PATH]' to load it.")
+            print(
+                "No FRS source data stored; use 'frs gen --path [PATH]' to load it."
+            )
             return
         print("Re-generating OpenFisca-UK input datasets:")
         write_files()
         print("Completed generation.")
 
+
 def load():
     ensure_folders_exist()
     if not os.listdir(resolve("csv")) and not os.listdir(resolve("raw")):
-        raise Exception("No OpenFisca-UK input files found, and no FRS source data found either. Load the TAB files with 'frs [PATH]'.")
+        raise Exception(
+            "No OpenFisca-UK input files found, and no FRS source data found either. Load the TAB files with 'frs [PATH]'."
+        )
     elif not os.listdir(resolve("csv")):
-        raise warnings.warn("No OpenFisca-UK-compatible data files found, regenerating from FRS TAB sources.")
+        raise warnings.warn(
+            "No OpenFisca-UK-compatible data files found, regenerating from FRS TAB sources."
+        )
         write_files()
-    return [pd.read_csv(resolve(os.path.join("csv", filename)), low_memory=False) for filename in ("person.csv", "benunit.csv", "household.csv")]
-        
+    return [
+        pd.read_csv(resolve(os.path.join("csv", filename)), low_memory=False)
+        for filename in ("person.csv", "benunit.csv", "household.csv")
+    ]
