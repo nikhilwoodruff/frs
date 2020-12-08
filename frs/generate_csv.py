@@ -3,72 +3,18 @@ from tqdm import tqdm
 import os
 import shutil
 import numpy as np
-from frs_params import *
+from frs.frs_params import *
+import sys
+import pandas as pd
+import argparse
+from colorama import init, Fore
+from termcolor import colored
+import json
+import warnings
 
-PERSON_FIELDNAMES = (
-    [
-        "person_id",
-        "benunit_id",
-        "household_id",
-        "role",
-        "adult_weight",
-        "earnings",
-        "profit",
-        "childcare",
-        "pension_income",
-        "age",
-        "care_hours",
-        "hours",
-        "savings_interest",
-        "misc_income",
-        "total_benefits",
-        "is_household_head",
-        "is_benunit_head",
-        "FRS_net_income",
-        "registered_disabled",
-        "dis_equality_act_core",
-        "dis_equality_act_wider"
-    ]
-    + [
-        benefit
-        for benefit in BENEFITS.values()
-        if benefit not in BENUNIT_LEVEL_BENEFITS and benefit in REPORTED
-    ]
-    + [
-        benefit + "_reported"
-        for benefit in BENEFITS.values()
-        if benefit not in BENUNIT_LEVEL_BENEFITS
-        and benefit in SIMULATED
-        and benefit
-    ]
-)
+init()
 
-BENUNIT_FIELDNAMES = (
-    ["benunit_id", "benunit_weight"]
-    + [
-        benefit
-        for benefit in BENEFITS.values()
-        if benefit in BENUNIT_LEVEL_BENEFITS and benefit in REPORTED
-    ]
-    + [
-        benefit + "_reported"
-        for benefit in BENEFITS.values()
-        if benefit in BENUNIT_LEVEL_BENEFITS and benefit in SIMULATED
-    ]
-)
-
-HOUSEHOLD_FIELDNAMES = [
-    "household_id",
-    "household_weight",
-    "country",
-    "rent",
-    "is_shared",
-    "housing_costs",
-    "is_social",
-    "num_rooms",
-    "region",
-    "council_tax",
-]
+__version__ = "0.2.0"
 
 
 def clean_dirs(output_dir):
@@ -136,7 +82,7 @@ def parse_file(
     """
     if desc is None:
         desc = f"Reading {filename}"
-    with open(os.path.join("data", filename), encoding="utf-8") as f:
+    with open(os.path.join(resolve("raw"), filename), encoding="utf-8") as f:
         reader = DictReader(f, fieldnames=next(f).split("\t"), delimiter="\t")
         for line in tqdm(reader, desc=desc):
             if multiple_levels:
@@ -176,7 +122,10 @@ def write_file(data, filename, fieldnames):
     Write a data dictionary to a CSV file.
     """
     with open(
-        os.path.join("frs", filename), "w+", encoding="utf-8", newline=""
+        os.path.join(resolve("csv"), filename),
+        "w+",
+        encoding="utf-8",
+        newline="",
     ) as f:
         writer = DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
@@ -197,6 +146,8 @@ def household_id(line):
 
 def parse_adult(line, person):
     person["person_id"] = person_id(line)
+    person["is_adult"] = True
+    person["is_child"] = False
     person["benunit_id"] = benunit_id(line)
     person["household_id"] = household_id(line)
     person["adult_weight"] = safe(line["GROSS4"])
@@ -210,7 +161,7 @@ def parse_adult(line, person):
     person["savings_interest"] = adjust_period(line["ININV"], WEEK, YEAR)
     person["misc_income"] = adjust_period(line["INRINC"], WEEK, YEAR)
     person["total_benefits"] = add_up(
-        line, "INDISBEN", "INOTHBEN", "INTXCRED", "INRPINC", "INDUC"
+        line, "INDISBEN", "INOTHBEN", "INTXCRED", "INDUC"
     )
     person["is_household_head"] = int(line["PERSON"]) == 1
     person["is_benunit_head"] = int(line["UPERSON"]) == 1
@@ -218,6 +169,7 @@ def parse_adult(line, person):
         adjust_period(safe(line["NINDINC"]), WEEK, YEAR)
         - person["misc_income"]
     )
+    person["student_loan_repayment"] = safe(line["SLREPAMT"])
     person["registered_disabled"] = safe(line["LAREG"]) == 1
     person["dis_equality_act_core"] = safe(line["DISCORA1"]) == 1
     person["dis_equality_act_wider"] = safe(line["DISACTA1"]) == 1
@@ -232,6 +184,8 @@ def parse_childcare(line, person):
 
 def parse_child(line, person):
     person["person_id"] = person_id(line)
+    person["is_adult"] = False
+    person["is_child"] = True
     person["benunit_id"] = benunit_id(line)
     person["household_id"] = household_id(line)
     person["role"] = "child"
@@ -260,6 +214,7 @@ def parse_asset(line, person):
 
 
 def parse_maintenance(line, person):
+    person["maintenance_payments"] = safe(line["MRUAMT"], line["MRAMT"])
     return person
 
 
@@ -314,11 +269,11 @@ def parse_household(line, household):
         line["NIHSCOST"]
     )
     band = int(safe(line["CTBAND"]))
-    household["council_tax"] = (
-        safe(line["CTANNUAL"], AVERAGE_COUNCIL_TAX[band - 1]) / 52
+    household["council_tax"] = safe(
+        line["CTANNUAL"], AVERAGE_COUNCIL_TAX[band - 1]
     )
     household["is_social"] = safe(line["PTENTYP2"]) in [1, 2]
-    household["region"] = GOVTREGNO[int(line["GVTREGNO"])]
+    household["region"] = REGIONS_TO_NUM[GOVTREGNO[int(line["GVTREGNO"])]]
     return household
 
 
@@ -326,9 +281,9 @@ def parse_extchild(line, benunit):
     return benunit
 
 
-def get_person_data():
+def write_files():
     """
-    Return a dictionary of person-level data.
+    Write OpenFisca-UK input CSV files.
     """
     person_data = parse_file(
         "adult.tab",
@@ -418,7 +373,112 @@ def get_person_data():
         data={},
     )
     write_file(household_data, "household.csv", HOUSEHOLD_FIELDNAMES)
+    with open(resolve("metadata.json"), "w+") as f:
+        json.dump(dict(version=__version__), f)
 
 
-clean_dirs("frs")
-get_person_data()
+def resolve(filename):
+    return os.path.join(os.path.dirname(__file__), filename)
+
+
+def ensure_folders_exist():
+    path = os.path.dirname(__file__)
+    if "csv" not in os.listdir(path):
+        os.makedirs(os.path.join(path, "csv"))
+    if "raw" not in os.listdir(path):
+        os.makedirs(os.path.join(path, "raw"))
+
+
+def main():
+    ensure_folders_exist()
+    existing_raw = os.listdir(resolve("raw"))
+    existing_csv = os.listdir(resolve("csv"))
+    parser = argparse.ArgumentParser(
+        description="Utility for managing Family Resources Survey microdata"
+    )
+    parser.add_argument(
+        "mode",
+        choices=["status", "gen", "regen"],
+        help="The action to take on stored data",
+    )
+    parser.add_argument(
+        "--path", required=False, help="The path to the FRS data"
+    )
+    args = parser.parse_args()
+    if args.mode == "status":
+        print("FRS status:")
+        print("\tFRS TAB files stored?\t\t\t\t", end="")
+        if existing_raw:
+            print(colored("Yes", "green"))
+        else:
+            print(colored("No", "red"))
+        print("\tFRS OpenFisca-UK input files generated?\t\t", end="")
+        if existing_csv:
+            print(colored("Yes", "green"))
+        else:
+            print(colored("No", "red"))
+        print("\tOpenFisca-UK input files outdated?\t\t", end="")
+        if existing_csv:
+            current_version = __version__
+            with open(resolve("metadata.json"), "r") as f:
+                gen_version = json.load(f)["version"]
+            outdated = current_version != gen_version
+            if not outdated:
+                print(
+                    colored("No", "green")
+                    + f" (files generated with current version, {current_version})"
+                )
+            else:
+                print(
+                    colored("Yes", "red")
+                    + f" (generated with {gen_version}, current is {current_version})"
+                )
+        else:
+            print(colored("N/A", "yellow"))
+    elif args.mode == "gen":
+        if not args.path or not os.path.exists(args.path):
+            print("Please specify a valid path to FRS TAB files.")
+            return
+        filenames = [
+            filename
+            for filename in os.listdir(args.path)
+            if filename[-4:].lower() == ".tab"
+        ]
+        if not filenames:
+            print("No FRS files were found.")
+            return
+        for filename in tqdm(filenames, desc="Storing FRS files"):
+            shutil.copyfile(
+                os.path.join(args.path, filename),
+                os.path.join(resolve("raw"), filename),
+            )
+        print("Stored FRS source files successfully.")
+        print("Generating OpenFisca-UK input datasets:")
+        write_files()
+        print("Completed generation.")
+    elif args.mode == "regen":
+        if not existing_raw:
+            print(
+                "No FRS source data stored; use 'frs gen --path [PATH]' to load it."
+            )
+            return
+        print("Re-generating OpenFisca-UK input datasets:")
+        write_files()
+        print("Completed generation.")
+
+
+def load():
+    ensure_folders_exist()
+    if not os.listdir(resolve("csv")) and not os.listdir(resolve("raw")):
+        raise Exception(
+            "No OpenFisca-UK input files found, and no FRS source data found either. Load the TAB files with 'frs [PATH]'."
+        )
+    elif not os.listdir(resolve("csv")):
+        raise warnings.warn(
+            "No OpenFisca-UK-compatible data files found, regenerating from FRS TAB sources."
+        )
+        write_files()
+    return [
+        pd.read_csv(resolve(os.path.join("csv", filename)), low_memory=False)
+        for filename in ("person.csv", "benunit.csv", "household.csv")
+    ]

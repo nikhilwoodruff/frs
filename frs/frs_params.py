@@ -113,7 +113,77 @@ REPORTED = [
     "state_pension",
     "PIP_DL",
     "PIP_M",
-    "IIDB"
+    "IIDB",
+]
+
+
+PERSON_FIELDNAMES = (
+    [
+        "person_id",
+        "benunit_id",
+        "household_id",
+        "role",
+        "adult_weight",
+        "earnings",
+        "profit",
+        "childcare",
+        "pension_income",
+        "age",
+        "care_hours",
+        "hours",
+        "savings_interest",
+        "misc_income",
+        "total_benefits",
+        "is_household_head",
+        "is_benunit_head",
+        "FRS_net_income",
+        "maintenance_payments",
+        "student_loan_repayment",
+        "is_adult",
+        "is_child",
+        "registered_disabled",
+        "dis_equality_act_core",
+        "dis_equality_act_wider",
+    ]
+    + [
+        benefit
+        for benefit in BENEFITS.values()
+        if benefit not in BENUNIT_LEVEL_BENEFITS and benefit in REPORTED
+    ]
+    + [
+        benefit + "_reported"
+        for benefit in BENEFITS.values()
+        if benefit not in BENUNIT_LEVEL_BENEFITS
+        and benefit in SIMULATED
+        and benefit
+    ]
+)
+
+BENUNIT_FIELDNAMES = (
+    ["benunit_id", "benunit_weight"]
+    + [
+        benefit
+        for benefit in BENEFITS.values()
+        if benefit in BENUNIT_LEVEL_BENEFITS and benefit in REPORTED
+    ]
+    + [
+        benefit + "_reported"
+        for benefit in BENEFITS.values()
+        if benefit in BENUNIT_LEVEL_BENEFITS and benefit in SIMULATED
+    ]
+)
+
+HOUSEHOLD_FIELDNAMES = [
+    "household_id",
+    "household_weight",
+    "country",
+    "rent",
+    "is_shared",
+    "housing_costs",
+    "is_social",
+    "num_rooms",
+    "region",
+    "council_tax",
 ]
 
 PERIOD_CODES = {
@@ -148,6 +218,10 @@ GOVTREGNO = {
     11: "WALES",
     12: "SCOTLAND",
     13: "NORTHERN_IRELAND",
+}
+
+REGIONS_TO_NUM = {
+    region: i for region, i in zip(GOVTREGNO.values(), range(len(GOVTREGNO)))
 }
 
 AVERAGE_COUNCIL_TAX = [1114, 1300, 1486, 1671, 2043, 2414, 2786, 3343, 3900, 0]
