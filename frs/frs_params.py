@@ -86,21 +86,6 @@ SIMULATED = [
     "universal_credit",
     "child_benefit",
     "child_benefit",
-]
-
-BENUNIT_LEVEL_BENEFITS = [
-    "working_tax_credit",
-    "child_tax_credit",
-    "JSA_income",
-    "ESA_income",
-    "income_support",
-    "housing_benefit",
-    "pension_credit",
-    "universal_credit",
-    "child_benefit",
-]
-
-REPORTED = [
     "AA",
     "DLA_M",
     "DLA_SC",
@@ -114,6 +99,18 @@ REPORTED = [
     "PIP_DL",
     "PIP_M",
     "IIDB",
+]
+
+BENUNIT_LEVEL_BENEFITS = [
+    "working_tax_credit",
+    "child_tax_credit",
+    "JSA_income",
+    "ESA_income",
+    "income_support",
+    "housing_benefit",
+    "pension_credit",
+    "universal_credit",
+    "child_benefit",
 ]
 
 
@@ -146,11 +143,6 @@ PERSON_FIELDNAMES = (
         "dis_equality_act_wider",
     ]
     + [
-        benefit
-        for benefit in BENEFITS.values()
-        if benefit not in BENUNIT_LEVEL_BENEFITS and benefit in REPORTED
-    ]
-    + [
         benefit + "_reported"
         for benefit in BENEFITS.values()
         if benefit not in BENUNIT_LEVEL_BENEFITS
@@ -161,11 +153,6 @@ PERSON_FIELDNAMES = (
 
 BENUNIT_FIELDNAMES = (
     ["benunit_id", "benunit_weight"]
-    + [
-        benefit
-        for benefit in BENEFITS.values()
-        if benefit in BENUNIT_LEVEL_BENEFITS and benefit in REPORTED
-    ]
     + [
         benefit + "_reported"
         for benefit in BENEFITS.values()
