@@ -14,7 +14,7 @@ import warnings
 
 init()
 
-__version__ = "0.2.0"
+__version__ = "0.1.0"
 
 
 def clean_dirs(output_dir):
@@ -232,14 +232,10 @@ def parse_benefit(line, person, benunit):
             ESA_type = JSA_ESA_TYPES[int(safe(line["VAR2"]))]
             name = name.replace("ESA", f"ESA_{ESA_type}")
         if name in BENUNIT_LEVEL_BENEFITS:
-            if name in REPORTED:
-                benunit[name] = amount
-            elif name in SIMULATED:
+            if name in SIMULATED:
                 benunit[name + "_reported"] = amount
         else:
-            if name in REPORTED:
-                person[name] = amount
-            elif name in SIMULATED:
+            if name in SIMULATED:
                 person[name + "_reported"] = amount
     return person, benunit
 
