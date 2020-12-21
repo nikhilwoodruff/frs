@@ -463,7 +463,7 @@ def main():
         write_files()
         print("Completed generation.")
     elif args.mode == "show":
-        webbrowser.open('file:///' + resolve("."))
+        webbrowser.open("file:///" + resolve("."))
 
 
 def load():

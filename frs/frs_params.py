@@ -114,51 +114,45 @@ BENUNIT_LEVEL_BENEFITS = [
 ]
 
 
-PERSON_FIELDNAMES = (
-    [
-        "person_id",
-        "benunit_id",
-        "household_id",
-        "role",
-        "adult_weight",
-        "earnings",
-        "profit",
-        "childcare",
-        "pension_income",
-        "age",
-        "care_hours",
-        "hours",
-        "savings_interest",
-        "misc_income",
-        "total_benefits",
-        "is_household_head",
-        "is_benunit_head",
-        "FRS_net_income",
-        "maintenance_payments",
-        "student_loan_repayment",
-        "is_adult",
-        "is_child",
-        "registered_disabled",
-        "dis_equality_act_core",
-        "dis_equality_act_wider",
-    ]
-    + [
-        benefit + "_reported"
-        for benefit in BENEFITS.values()
-        if benefit not in BENUNIT_LEVEL_BENEFITS
-        and benefit in SIMULATED
-        and benefit
-    ]
-)
+PERSON_FIELDNAMES = [
+    "person_id",
+    "benunit_id",
+    "household_id",
+    "role",
+    "adult_weight",
+    "earnings",
+    "profit",
+    "childcare",
+    "pension_income",
+    "age",
+    "care_hours",
+    "hours",
+    "savings_interest",
+    "misc_income",
+    "total_benefits",
+    "is_household_head",
+    "is_benunit_head",
+    "FRS_net_income",
+    "maintenance_payments",
+    "student_loan_repayment",
+    "is_adult",
+    "is_child",
+    "registered_disabled",
+    "dis_equality_act_core",
+    "dis_equality_act_wider",
+] + [
+    benefit + "_reported"
+    for benefit in BENEFITS.values()
+    if benefit not in BENUNIT_LEVEL_BENEFITS
+    and benefit in SIMULATED
+    and benefit
+]
 
-BENUNIT_FIELDNAMES = (
-    ["benunit_id", "benunit_weight"]
-    + [
-        benefit + "_reported"
-        for benefit in BENEFITS.values()
-        if benefit in BENUNIT_LEVEL_BENEFITS and benefit in SIMULATED
-    ]
-)
+BENUNIT_FIELDNAMES = ["benunit_id", "benunit_weight"] + [
+    benefit + "_reported"
+    for benefit in BENEFITS.values()
+    if benefit in BENUNIT_LEVEL_BENEFITS and benefit in SIMULATED
+]
 
 HOUSEHOLD_FIELDNAMES = [
     "household_id",
