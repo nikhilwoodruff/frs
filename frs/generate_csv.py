@@ -11,6 +11,7 @@ from colorama import init, Fore
 from termcolor import colored
 import json
 import warnings
+import webbrowser
 
 init()
 
@@ -394,7 +395,7 @@ def main():
     )
     parser.add_argument(
         "mode",
-        choices=["status", "gen", "regen"],
+        choices=["status", "gen", "regen", "show"],
         help="The action to take on stored data",
     )
     parser.add_argument(
@@ -461,6 +462,8 @@ def main():
         print("Re-generating OpenFisca-UK input datasets:")
         write_files()
         print("Completed generation.")
+    elif args.mode == "show":
+        webbrowser.open('file:///' + resolve("."))
 
 
 def load():
