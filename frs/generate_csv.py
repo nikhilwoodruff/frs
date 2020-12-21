@@ -229,7 +229,7 @@ def parse_benefit(line, person, benunit):
         elif code == 14:
             JSA_type = JSA_ESA_TYPES[int(safe(line["VAR2"]))]
             name = name.replace("JSA", f"JSA_{JSA_type}")
-        elif code == 54:
+        elif code == 16:
             ESA_type = JSA_ESA_TYPES[int(safe(line["VAR2"]))]
             name = name.replace("ESA", f"ESA_{ESA_type}")
         if name in BENUNIT_LEVEL_BENEFITS:
