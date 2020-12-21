@@ -27,9 +27,9 @@ BENEFITS = {
     14: "JSA",
     14.1: "JSA_contrib",
     14.2: "JSA_income",
-    54: "ESA",
-    54.1: "ESA_contrib",
-    54.2: "ESA_income",
+    16: "ESA",
+    16.1: "ESA_contrib",
+    16.2: "ESA_income",
     15: "IIDB",
     17: "incapacity_benefit",
     19: "income_support",
@@ -86,21 +86,6 @@ SIMULATED = [
     "universal_credit",
     "child_benefit",
     "child_benefit",
-]
-
-BENUNIT_LEVEL_BENEFITS = [
-    "working_tax_credit",
-    "child_tax_credit",
-    "JSA_income",
-    "ESA_income",
-    "income_support",
-    "housing_benefit",
-    "pension_credit",
-    "universal_credit",
-    "child_benefit",
-]
-
-REPORTED = [
     "AA",
     "DLA_M",
     "DLA_SC",
@@ -116,62 +101,58 @@ REPORTED = [
     "IIDB",
 ]
 
+BENUNIT_LEVEL_BENEFITS = [
+    "working_tax_credit",
+    "child_tax_credit",
+    "JSA_income",
+    "ESA_income",
+    "income_support",
+    "housing_benefit",
+    "pension_credit",
+    "universal_credit",
+    "child_benefit",
+]
 
-PERSON_FIELDNAMES = (
-    [
-        "person_id",
-        "benunit_id",
-        "household_id",
-        "role",
-        "adult_weight",
-        "earnings",
-        "profit",
-        "childcare",
-        "pension_income",
-        "age",
-        "care_hours",
-        "hours",
-        "savings_interest",
-        "misc_income",
-        "total_benefits",
-        "is_household_head",
-        "is_benunit_head",
-        "FRS_net_income",
-        "maintenance_payments",
-        "student_loan_repayment",
-        "is_adult",
-        "is_child",
-        "registered_disabled",
-        "dis_equality_act_core",
-        "dis_equality_act_wider",
-    ]
-    + [
-        benefit
-        for benefit in BENEFITS.values()
-        if benefit not in BENUNIT_LEVEL_BENEFITS and benefit in REPORTED
-    ]
-    + [
-        benefit + "_reported"
-        for benefit in BENEFITS.values()
-        if benefit not in BENUNIT_LEVEL_BENEFITS
-        and benefit in SIMULATED
-        and benefit
-    ]
-)
 
-BENUNIT_FIELDNAMES = (
-    ["benunit_id", "benunit_weight"]
-    + [
-        benefit
-        for benefit in BENEFITS.values()
-        if benefit in BENUNIT_LEVEL_BENEFITS and benefit in REPORTED
-    ]
-    + [
-        benefit + "_reported"
-        for benefit in BENEFITS.values()
-        if benefit in BENUNIT_LEVEL_BENEFITS and benefit in SIMULATED
-    ]
-)
+PERSON_FIELDNAMES = [
+    "person_id",
+    "benunit_id",
+    "household_id",
+    "role",
+    "adult_weight",
+    "earnings",
+    "profit",
+    "childcare",
+    "pension_income",
+    "age",
+    "care_hours",
+    "hours",
+    "savings_interest",
+    "misc_income",
+    "total_benefits",
+    "is_household_head",
+    "is_benunit_head",
+    "FRS_net_income",
+    "maintenance_payments",
+    "student_loan_repayment",
+    "is_adult",
+    "is_child",
+    "registered_disabled",
+    "dis_equality_act_core",
+    "dis_equality_act_wider",
+] + [
+    benefit + "_reported"
+    for benefit in BENEFITS.values()
+    if benefit not in BENUNIT_LEVEL_BENEFITS
+    and benefit in SIMULATED
+    and benefit
+]
+
+BENUNIT_FIELDNAMES = ["benunit_id", "benunit_weight"] + [
+    benefit + "_reported"
+    for benefit in BENEFITS.values()
+    if benefit in BENUNIT_LEVEL_BENEFITS and benefit in SIMULATED
+]
 
 HOUSEHOLD_FIELDNAMES = [
     "household_id",

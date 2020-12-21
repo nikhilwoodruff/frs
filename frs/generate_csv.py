@@ -11,10 +11,11 @@ from colorama import init, Fore
 from termcolor import colored
 import json
 import warnings
+import webbrowser
 
 init()
 
-__version__ = "0.2.0"
+__version__ = "0.1.0"
 
 
 def clean_dirs(output_dir):
@@ -228,18 +229,14 @@ def parse_benefit(line, person, benunit):
         elif code == 14:
             JSA_type = JSA_ESA_TYPES[int(safe(line["VAR2"]))]
             name = name.replace("JSA", f"JSA_{JSA_type}")
-        elif code == 54:
+        elif code == 16:
             ESA_type = JSA_ESA_TYPES[int(safe(line["VAR2"]))]
             name = name.replace("ESA", f"ESA_{ESA_type}")
         if name in BENUNIT_LEVEL_BENEFITS:
-            if name in REPORTED:
-                benunit[name] = amount
-            elif name in SIMULATED:
+            if name in SIMULATED:
                 benunit[name + "_reported"] = amount
         else:
-            if name in REPORTED:
-                person[name] = amount
-            elif name in SIMULATED:
+            if name in SIMULATED:
                 person[name + "_reported"] = amount
     return person, benunit
 
@@ -398,7 +395,7 @@ def main():
     )
     parser.add_argument(
         "mode",
-        choices=["status", "gen", "regen"],
+        choices=["status", "gen", "regen", "show"],
         help="The action to take on stored data",
     )
     parser.add_argument(
@@ -465,6 +462,8 @@ def main():
         print("Re-generating OpenFisca-UK input datasets:")
         write_files()
         print("Completed generation.")
+    elif args.mode == "show":
+        webbrowser.open("file:///" + resolve("."))
 
 
 def load():
