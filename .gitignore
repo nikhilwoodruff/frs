@@ -4,3 +4,5 @@ data/README.md
 frs/README.md
 .vscode/
 **/*.pyc
+frs.egg-info
+metadata.json

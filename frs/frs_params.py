@@ -140,7 +140,7 @@ PERSON_FIELDNAMES = [
     "registered_disabled",
     "dis_equality_act_core",
     "dis_equality_act_wider",
-    "ESA_income_reported_personal"
+    "ESA_income_reported_personal",
 ] + [
     benefit + "_reported"
     for benefit in BENEFITS.values()
