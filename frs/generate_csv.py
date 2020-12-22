@@ -238,6 +238,8 @@ def parse_benefit(line, person, benunit):
         else:
             if name in SIMULATED:
                 person[name + "_reported"] = amount
+        if code == 16:
+            person["ESA_income_reported_personal"] = amount
     return person, benunit
 
 
