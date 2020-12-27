@@ -154,7 +154,6 @@ def parse_adult(line, person):
     person["adult_weight"] = safe(line["GROSS4"])
     person["role"] = "adult"
     person["earnings"] = adjust_period(line["INEARNS"], WEEK, YEAR)
-    person["profit"] = adjust_period(line["SEINCAMT"], WEEK, YEAR)
     person["pension_income"] = adjust_period(line["INPENINC"], WEEK, YEAR)
     person["age"] = safe(line["AGE80"])
     person["care_hours"] = CARE_HOURS_CODES[safe(line["HOURTOT"])]
@@ -203,6 +202,7 @@ def parse_child(line, person):
 
 
 def parse_job(line, person):
+    person["profit"] += adjust_period(line["SEINCAMT"], WEEK, YEAR)
     return person
 
 
