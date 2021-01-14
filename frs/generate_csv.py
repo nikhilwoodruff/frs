@@ -153,23 +153,23 @@ def parse_adult(line, person):
     person["household_id"] = household_id(line)
     person["adult_weight"] = safe(line["GROSS4"])
     person["role"] = "adult"
-    person["earnings"] = adjust_period(line["INEARNS"], WEEK, YEAR)
-    person["pension_income"] = adjust_period(line["INPENINC"], WEEK, YEAR)
+    person["earnings"] = adjust_period(line["INEARNS"])
+    person["pension_income"] = adjust_period(line["INPENINC"])
     person["age"] = safe(line["AGE80"])
     person["care_hours"] = CARE_HOURS_CODES[safe(line["HOURTOT"])]
     person["hours"] = safe(line["TOTHOURS"])
-    person["savings_interest"] = adjust_period(line["ININV"], WEEK, YEAR)
-    person["misc_income"] = adjust_period(line["INRINC"], WEEK, YEAR)
-    person["total_benefits"] = add_up(
+    person["savings_interest"] = adjust_period(line["ININV"])
+    person["misc_income"] = adjust_period(line["INRINC"])
+    person["total_benefits"] = adjust_period(add_up(
         line, "INDISBEN", "INOTHBEN", "INTXCRED", "INDUC"
-    )
+    ))
     person["is_household_head"] = int(line["PERSON"]) == 1
     person["is_benunit_head"] = int(line["UPERSON"]) == 1
     person["FRS_net_income"] = (
-        adjust_period(safe(line["NINDINC"]), WEEK, YEAR)
+        adjust_period(safe(line["NINDINC"]))
         - person["misc_income"]
     )
-    person["student_loan_repayment"] = safe(line["SLREPAMT"])
+    person["student_loan_repayment"] = adjust_period(line["SLREPAMT"])
     person["registered_disabled"] = safe(line["LAREG"]) == 1
     person["dis_equality_act_core"] = safe(line["DISCORA1"]) == 1
     person["dis_equality_act_wider"] = safe(line["DISACTA1"]) == 1
@@ -178,7 +178,7 @@ def parse_adult(line, person):
 
 def parse_childcare(line, person):
     if line["REGISTRD"] == "1":
-        person["childcare"] += safe(line["CHAMT"])
+        person["childcare"] += adjust_period(safe(line["CHAMT"]))
     return person
 
 
@@ -190,9 +190,9 @@ def parse_child(line, person):
     person["household_id"] = household_id(line)
     person["role"] = "child"
     person["age"] = safe(line["AGE"])
-    person["misc_income"] = adjust_period(line["CHRINC"], WEEK, YEAR)
-    person["earnings"] = adjust_period(line["CHEARNS"], WEEK, YEAR)
-    person["FRS_net_income"] = safe(line["CHINCDV"]) - person["misc_income"]
+    person["misc_income"] = adjust_period(line["CHRINC"])
+    person["earnings"] = adjust_period(line["CHEARNS"])
+    person["FRS_net_income"] = adjust_period(line["CHINCDV"]) - adjust_period(person["misc_income"])
     person["registered_disabled"] = safe(line["LAREG"]) == 1
     person["dis_equality_act_core"] = safe(line["DISCORC1"]) == 1
     person["dis_equality_act_wider"] = safe(line["DISACTC1"]) == 1
@@ -202,7 +202,7 @@ def parse_child(line, person):
 
 
 def parse_job(line, person):
-    person["profit"] += adjust_period(line["SEINCAMT"], WEEK, YEAR)
+    person["profit"] += adjust_period(line["SEINCAMT"])
     return person
 
 
@@ -215,7 +215,7 @@ def parse_asset(line, person):
 
 
 def parse_maintenance(line, person):
-    person["maintenance_payments"] = safe(line["MRUAMT"], line["MRAMT"])
+    person["maintenance_payments"] = adjust_period(safe(line["MRUAMT"], line["MRAMT"]))
     return person
 
 
@@ -225,7 +225,7 @@ def parse_benefit(line, person, benunit):
         name = BENEFITS[code]
         amount = safe(line["BENAMT"])
         if code == 5:
-            amount = adjust_period(safe(line["BENAMT"]), WEEK, YEAR)
+            amount = adjust_period(safe(line["BENAMT"]))
         elif code == 14:
             JSA_type = JSA_ESA_TYPES[int(safe(line["VAR2"]))]
             name = name.replace("JSA", f"JSA_{JSA_type}")
@@ -234,12 +234,12 @@ def parse_benefit(line, person, benunit):
             name = name.replace("ESA", f"ESA_{ESA_type}")
         if name in BENUNIT_LEVEL_BENEFITS:
             if name in SIMULATED:
-                benunit[name + "_reported"] = amount
+                benunit[name + "_reported"] = adjust_period(amount)
         else:
             if name in SIMULATED:
-                person[name + "_reported"] = amount
+                person[name + "_reported"] = adjust_period(amount)
         if code == 16:
-            person["ESA_income_reported_personal"] = amount
+            person["ESA_income_reported_personal"] = adjust_period(amount)
     return person, benunit
 
 
@@ -262,9 +262,9 @@ def parse_household(line, household):
     household["household_weight"] = float(line["GROSS4"])
     household["country"] = COUNTRY[safe(line["COUNTRY"])]
     household["num_rooms"] = safe(line["ROOMS10"])
-    household["rent"] = safe(line["HHRENT"])
+    household["rent"] = adjust_period(line["HHRENT"])
     household["is_shared"] = safe(line["HHSTAT"]) == 2
-    household["housing_costs"] = safe(line["GBHSCOST"]) + safe(
+    household["housing_costs"] = adjust_period(line["GBHSCOST"]) + safe(
         line["NIHSCOST"]
     )
     band = int(safe(line["CTBAND"]))
