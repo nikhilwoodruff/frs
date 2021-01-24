@@ -124,28 +124,28 @@ def write_files():
         table_utils.person_id,
         tables.parse_adult,
         initial_fields=tables.PERSON_FIELDNAMES,
-        data={},
+        data={}
     )
     person_data = parse_file(
         "accounts.tab",
         table_utils.person_id,
         tables.parse_account,
         initial_fields=tables.PERSON_FIELDNAMES,
-        data=person_data,
+        data=person_data
     )
     person_data = parse_file(
         "assets.tab",
         table_utils.person_id,
         tables.parse_asset,
         initial_fields=tables.PERSON_FIELDNAMES,
-        data=person_data,
+        data=person_data
     )
     person_data = parse_file(
         "benefits.tab",
         table_utils.person_id,
         tables.parse_benefit,
         initial_fields=tables.PERSON_FIELDNAMES,
-        data=person_data,
+        data=person_data
     )
     benunit_data = parse_file(
         "benunit.tab",
@@ -153,6 +153,13 @@ def write_files():
         tables.parse_benunit,
         initial_fields=tables.BENUNIT_FIELDNAMES,
         data={}
+    )
+    person_data = parse_file(
+        "care.tab",
+        table_utils.person_id,
+        tables.parse_care,
+        initial_fields=tables.PERSON_FIELDNAMES,
+        data=person_data
     )
     write_file(person_data, "t_person.csv", tables.PERSON_FIELDNAMES)
     write_file(benunit_data, "t_benunit.csv", tables.BENUNIT_FIELDNAMES)
