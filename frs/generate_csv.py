@@ -147,7 +147,15 @@ def write_files():
         initial_fields=tables.PERSON_FIELDNAMES,
         data=person_data,
     )
+    benunit_data = parse_file(
+        "benunit.tab",
+        table_utils.benunit_id,
+        tables.parse_benunit,
+        initial_fields=tables.BENUNIT_FIELDNAMES,
+        data={}
+    )
     write_file(person_data, "t_person.csv", tables.PERSON_FIELDNAMES)
+    write_file(benunit_data, "t_benunit.csv", tables.BENUNIT_FIELDNAMES)
 
 
 def main():
