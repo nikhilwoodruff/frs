@@ -1,7 +1,8 @@
 from frs.table_utils import *
 
 def parse_adult(line, person):
-    person["person_id"] = person_id(line)
+    person["is_adult"] = True
+    person["is_child"] = False
 
     # absence
     person["is_absent"] = safe(line["ABSWK"]) == 1
@@ -57,15 +58,15 @@ def parse_adult(line, person):
     # disability
     person["dis_equality_act_core"] = safe(line["DISCORA1"]) == 1
     person["vision_difficulty"] = safe(line["DISD01"]) == 1
-    person["hearing_difficulty"] = safe(line["DISD01"]) == 1
-    person["mobility_difficulty"] = safe(line["DISD01"]) == 1
-    person["dexterity_difficulty"] = safe(line["DISD01"]) == 1
-    person["learning_difficulty"] = safe(line["DISD01"]) == 1
-    person["memory_difficulty"] = safe(line["DISD01"]) == 1
-    person["mental_health_difficulty"] = safe(line["DISD01"]) == 1
-    person["stamina_difficulty"] = safe(line["DISD01"]) == 1
-    person["social_difficulty"] = safe(line["DISD01"]) == 1
-    person["other_difficulty"] = safe(line["DISD01"]) == 1
+    person["hearing_difficulty"] = safe(line["DISD02"]) == 1
+    person["mobility_difficulty"] = safe(line["DISD03"]) == 1
+    person["dexterity_difficulty"] = safe(line["DISD04"]) == 1
+    person["learning_difficulty"] = safe(line["DISD05"]) == 1
+    person["memory_difficulty"] = safe(line["DISD06"]) == 1
+    person["mental_health_difficulty"] = safe(line["DISD07"]) == 1
+    person["stamina_difficulty"] = safe(line["DISD08"]) == 1
+    person["social_difficulty"] = safe(line["DISD09"]) == 1
+    person["other_difficulty"] = safe(line["DISD10"]) == 1
 
     # education
     person["highest_qualification"] = QUALIFICATIONS[safe(line["DVHIQUAL"])]
@@ -121,8 +122,10 @@ def parse_adult(line, person):
     person["is_partial_sighted"] = safe(line["SPCREG2"]) == 1
     person["is_deaf"] = safe(line["SPCREG3"]) == 1
 
-    person["FE_grants"] = safe(line["TOTGRANT"])
-    person["hours"] = safe(line["TOTHOURS"])
+    person["edu_grants"] = safe(line["TOTGRANT"])
+    person["weekly_hours"] = safe(line["TOTHOURS"])
+
+    person["misc_income"] = yearly(line["INRINC"])
     return person
 
 ACCOUNT_ESTIMATES = {
@@ -346,6 +349,8 @@ STANDARD_OCC_CLASS = {
 }
 
 ADULT_FIELDNAMES = [
+    "is_adult",
+    "is_child",
     "is_absent",
     "reason_for_absence",
     "absence_pay",
@@ -422,7 +427,8 @@ ADULT_FIELDNAMES = [
     "is_partial_sighted",
     "is_deaf",
     "FE_grants",
-    "hours"
+    "weekly_hours",
+    "misc_income"
 ]
 
 ADULT_ENUMS = dict(

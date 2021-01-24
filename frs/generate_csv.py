@@ -156,13 +156,49 @@ def write_files():
     )
     person_data = parse_file(
         "care.tab",
-        table_utils.person_id,
+        table_utils.benunit_id,
         tables.parse_care,
+        initial_fields=tables.PERSON_FIELDNAMES,
+        data=person_data
+    )
+    person_data = parse_file(
+        "child.tab",
+        table_utils.person_id,
+        tables.parse_child,
+        initial_fields=tables.PERSON_FIELDNAMES,
+        data=person_data
+    )
+    person_data = parse_file(
+        "chldcare.tab",
+        table_utils.person_id,
+        tables.parse_childcare,
+        initial_fields=tables.PERSON_FIELDNAMES,
+        data=person_data
+    )
+    household_data = parse_file(
+        "endowmnt.tab",
+        table_utils.household_id,
+        tables.parse_endowment,
+        initial_fields=tables.HOUSEHOLD_FIELDNAMES,
+        data={}
+    )
+    benunit_data = parse_file(
+        "extchild.tab",
+        table_utils.benunit_id,
+        tables.parse_extchild,
+        initial_fields=tables.BENUNIT_FIELDNAMES,
+        data=benunit_data
+    )
+    person_data = parse_file(
+        "govpay.tab",
+        table_utils.person_id,
+        tables.parse_govpay,
         initial_fields=tables.PERSON_FIELDNAMES,
         data=person_data
     )
     write_file(person_data, "t_person.csv", tables.PERSON_FIELDNAMES)
     write_file(benunit_data, "t_benunit.csv", tables.BENUNIT_FIELDNAMES)
+    write_file(household_data, "t_household.csv", tables.HOUSEHOLD_FIELDNAMES)
 
 
 def main():

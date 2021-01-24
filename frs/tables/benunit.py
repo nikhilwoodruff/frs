@@ -11,3 +11,5 @@ BENUNIT_FIELDNAMES = [
     "can_pay_200_pounds",
     "benunit_expenditure"
 ]
+
+BENUNIT_ENUMS = {}

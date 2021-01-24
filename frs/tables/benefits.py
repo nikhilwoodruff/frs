@@ -81,3 +81,5 @@ JSA_ESA_TYPES = {
 }
 
 BENEFITS_FIELDNAMES = list(map(lambda x : x + "_reported", BENEFITS.values()))
+
+BENEFITS_ENUMS = {}
