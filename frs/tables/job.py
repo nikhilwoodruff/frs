@@ -13,7 +13,7 @@ def parse_job(line, person):
     person["medical_insurance_deductions"] += yearly(safe(line["DEDUC7"], line["DEDUC7"]), from_period=line["GRWAGPD"])
     person["charity_deductions"] += yearly(safe(line["DEDUC8"], line["DEDUC8"]), from_period=line["GRWAGPD"])
     person["student_loan_deductions"] += yearly(safe(line["DEDUC9"], line["DEDUC9"]), from_period=line["GRWAGPD"])
-    person["pension_deductions"] += yearly(safe(line["DEDOTH"], line["UDEDOTH"]), from_period=line["GRWAGPD"])
+    person["other_deductions"] += yearly(safe(line["DEDOTH"]), from_period=line["GRWAGPD"])
 
     person["num_FT_jobs"] += int(safe(line["FTPT"]) == 1)
     person["num_PT_jobs"] += int(safe(line["FTPT"]) == 2)
@@ -64,7 +64,7 @@ JOB_FIELDNAMES = [
     "medical_insurance_deductions",
     "charity_deductions",
     "student_loan_deductions",
-    "pension_deductions",
+    "other_deductions",
     "num_FT_jobs",
     "num_PT_jobs",
     "paid_hourly",
