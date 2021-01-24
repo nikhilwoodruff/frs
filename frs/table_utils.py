@@ -61,7 +61,7 @@ def add_up(line, *fieldnames):
     return sum(map(safe, map(lambda fieldname: line[fieldname], fieldnames)))
 
 
-def adjust_period(value, period_code, target_period_code):
+def adjust_period(value, period_code, target_period_code, is_day_count=False):
     """Adjusts a value from one period to another
 
     Args:
@@ -79,9 +79,12 @@ def adjust_period(value, period_code, target_period_code):
     if period_code not in PERIOD_CODES or target_period_code not in PERIOD_CODES:
         print("Warning: missing valid period code, writing as 0.")
         return 0
-    relative_size = (
-        PERIOD_CODES[target_period_code] / PERIOD_CODES[period_code]
-    )
+    if is_day_count:
+        relative_size = PERIOD_CODES[target_period_code] / target_period_code
+    else:
+        relative_size = (
+            PERIOD_CODES[target_period_code] / PERIOD_CODES[period_code]
+        )
     return safe(value) * relative_size
 
 def yearly(value, from_period=WEEK):
