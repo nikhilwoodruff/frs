@@ -25,11 +25,7 @@ def parse_job(line, person):
     person["take_home_pay"] += yearly(line["PAYAMT"], from_period=line["PAYPD"])
     person["PAYE_deducted"] += yearly(line["PAYE"], from_period=line["PAYPD"])
 
-    date_format = "%d/%m/%Y"
-    a = datetime.strptime(line["SE1"], date_format)
-    b = datetime.strptime(line["SE2"], date_format)
-    num_days = (b - a).days
-    person["gross_profit"] += adjust_period(line["PROFIT1"], period_code=num_days, target_period_code=YEAR, is_day_count=True)
+    person["gross_profit"] += yearly(line["PROFIT1"])
 
     person["income_tax_reported"] += safe(line["SETAXAMT"]) + yearly(line["TAXDAMT"], from_period=line["TAXDPD"])
     person["NI_lump_sum_reported"] += safe(line["SENIIAMT"]) + safe(line["SENILAMT"])

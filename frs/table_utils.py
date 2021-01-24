@@ -82,6 +82,8 @@ def adjust_period(value, period_code, target_period_code, is_day_count=False):
     if is_day_count:
         relative_size = PERIOD_CODES[target_period_code] / target_period_code
     else:
+        if period_code != 97:
+            period_code = WEEK
         relative_size = (
             PERIOD_CODES[target_period_code] / PERIOD_CODES[period_code]
         )

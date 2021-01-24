@@ -66,6 +66,7 @@ parse_func = dict(
     job=parse_job,
     maint=parse_maintenance,
     mortcont=parse_mortgage_contribution,
+    mortgage=parse_mortgage,
     oddjob=parse_oddjob,
     owner=parse_owner,
     penprov=parse_pension_provision,
