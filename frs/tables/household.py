@@ -19,7 +19,7 @@ def parse_household(line, household):
     household["building_insured"] = safe(line["COVOTHS"]) in [1, 2]
     household["contents_insured"] = safe(line["COVOTHS"]) == 2
 
-    household["council_tax_discount"] = COUNCIL_TAX_DISCOUNT[safe(line["C25D50D"])]
+    household["council_tax_discount"] = COUNCIL_TAX_DISCOUNT[safe(line["CT25D50D"])]
     household["council_tax_band"] = COUNCIL_TAX_BAND[safe(line["CTBAND"])]
     household["council_tax"] = safe(line["CTANNUAL"])
     household["council_tax_benefit"] = yearly(line["CTREBAMT"], from_period=line["CTREBPD"])
@@ -41,7 +41,7 @@ def parse_household(line, household):
     household["num_rooms"] = safe(line["ROOMS10"])
 
     household["rates_rebate"] = yearly(line["RTREBAMT"], from_period=line["RTTIMEPD"])
-    household["rate_relief"] = yearly(line["RTRTAMT"], from_period=line["RTTIMEPD"])
+    household["rate_relief"] = yearly(line["RTRTRAMT"], from_period=line["RTTIMEPD"])
     household["sewerage_rate"] = yearly(line["SEWANUL"])
 
     household["insurance_premium"] = yearly(line["STRAMT2"])
