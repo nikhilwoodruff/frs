@@ -2,13 +2,20 @@ from frs.table_utils import *
 from frs.tables.accounts import ACCOUNT_TYPES
 
 def parse_benefit(line, person):
-    benefit = BENEFITS[safe(line["BENEFIT"])]
-    amount = yearly(safe(line["BENAMT"], line["NOTUSAMT"]), from_period=safe(line["BENPD"], line["NOTUSPD"]))
-    person[benefit + "_reported"] = amount 
+    if safe(line["BENEFIT"]) in BENEFITS:
+        benefit = BENEFITS[safe(line["BENEFIT"])]
+        amount = yearly(safe(line["BENAMT"], line["NOTUSAMT"]), from_period=safe(line["BENPD"], line["NOTUSPD"]))
+        if benefit == "JSA":
+            JSA_type = JSA_ESA_TYPES[int(safe(line["VAR2"]))]
+            benefit = benefit.replace("JSA", f"JSA_{JSA_type}")
+        elif benefit == "ESA":
+            ESA_type = JSA_ESA_TYPES[int(safe(line["VAR2"]))]
+            benefit = benefit.replace("ESA", f"ESA_{ESA_type}")
+        person[benefit + "_reported"] = amount 
     return person
 
 BENEFITS = {
-    NO_DATA: "uknown",
+    NO_DATA: "unknown",
     1: "DLA_SC",
     2: "DLA_M",
     3: "child_benefit",
@@ -20,11 +27,9 @@ BENEFITS = {
     10: "SDA",
     12: "AA",
     13: "carers_allowance",
-    14: "JSA",
     14.1: "JSA_contrib",
     14.2: "JSA_income",
     15: "IIDB",
-    16: "ESA",
     16.1: "ESA_contrib",
     16.2: "ESA_income",
     17: "incapacity_benefit",
@@ -75,4 +80,4 @@ JSA_ESA_TYPES = {
     6: "contrib",
 }
 
-BENEFITS_FIELDNAMES = None
+BENEFITS_FIELDNAMES = list(map(lambda x : x + "_reported", BENEFITS.values()))

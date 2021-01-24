@@ -133,6 +133,20 @@ def write_files():
         initial_fields=tables.PERSON_FIELDNAMES,
         data=person_data,
     )
+    person_data = parse_file(
+        "assets.tab",
+        table_utils.person_id,
+        tables.parse_asset,
+        initial_fields=tables.PERSON_FIELDNAMES,
+        data=person_data,
+    )
+    person_data = parse_file(
+        "benefits.tab",
+        table_utils.person_id,
+        tables.parse_benefit,
+        initial_fields=tables.PERSON_FIELDNAMES,
+        data=person_data,
+    )
     write_file(person_data, "t_person.csv", tables.PERSON_FIELDNAMES)
 
 
