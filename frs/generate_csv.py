@@ -119,83 +119,32 @@ def write_files():
     """
     Write OpenFisca-UK input CSV files.
     """
-    person_data = parse_file(
-        "adult.tab",
-        table_utils.person_id,
-        tables.parse_adult,
-        initial_fields=tables.PERSON_FIELDNAMES,
-        data={}
-    )
-    person_data = parse_file(
-        "accounts.tab",
-        table_utils.person_id,
-        tables.parse_account,
-        initial_fields=tables.PERSON_FIELDNAMES,
-        data=person_data
-    )
-    person_data = parse_file(
-        "assets.tab",
-        table_utils.person_id,
-        tables.parse_asset,
-        initial_fields=tables.PERSON_FIELDNAMES,
-        data=person_data
-    )
-    person_data = parse_file(
-        "benefits.tab",
-        table_utils.person_id,
-        tables.parse_benefit,
-        initial_fields=tables.PERSON_FIELDNAMES,
-        data=person_data
-    )
-    benunit_data = parse_file(
-        "benunit.tab",
-        table_utils.benunit_id,
-        tables.parse_benunit,
-        initial_fields=tables.BENUNIT_FIELDNAMES,
-        data={}
-    )
-    person_data = parse_file(
-        "care.tab",
-        table_utils.benunit_id,
-        tables.parse_care,
-        initial_fields=tables.PERSON_FIELDNAMES,
-        data=person_data
-    )
-    person_data = parse_file(
-        "child.tab",
-        table_utils.person_id,
-        tables.parse_child,
-        initial_fields=tables.PERSON_FIELDNAMES,
-        data=person_data
-    )
-    person_data = parse_file(
-        "chldcare.tab",
-        table_utils.person_id,
-        tables.parse_childcare,
-        initial_fields=tables.PERSON_FIELDNAMES,
-        data=person_data
-    )
-    household_data = parse_file(
-        "endowmnt.tab",
-        table_utils.household_id,
-        tables.parse_endowment,
-        initial_fields=tables.HOUSEHOLD_FIELDNAMES,
-        data={}
-    )
-    benunit_data = parse_file(
-        "extchild.tab",
-        table_utils.benunit_id,
-        tables.parse_extchild,
-        initial_fields=tables.BENUNIT_FIELDNAMES,
-        data=benunit_data
-    )
-    person_data = parse_file(
-        "govpay.tab",
-        table_utils.person_id,
-        tables.parse_govpay,
-        initial_fields=tables.PERSON_FIELDNAMES,
-        data=person_data
-    )
+    person_data, benunit_data, household_data = {}, {}, {}
+    data = dict(person=person_data, benunit=benunit_data, household=household_data)
+    for filename in os.listdir(resolve("raw")):
+        name = filename.replace(".tab", "")
+        if name in tables.parse_func:
+            if name in table_utils.PERSON_LEVEL_FILES:
+                entity = "person"
+                id_func = table_utils.person_id
+                initial_fields = tables.PERSON_FIELDNAMES
+            elif name in table_utils.BENUNIT_LEVEL_FILES:
+                entity = "benunit"
+                id_func = table_utils.benunit_id
+                initial_fields = tables.BENUNIT_FIELDNAMES
+            else:
+                entity = "household"
+                id_func = table_utils.household_id
+                initial_fields = tables.HOUSEHOLD_FIELDNAMES
+            parse_function = tables.parse_func[name]
+            data[entity] = parse_file(
+                filename,
+                id_func,
+                parse_function,
+                initial_fields=initial_fields,
+                data=data[entity]
+            )
+
     write_file(person_data, "t_person.csv", tables.PERSON_FIELDNAMES)
     write_file(benunit_data, "t_benunit.csv", tables.BENUNIT_FIELDNAMES)
     write_file(household_data, "t_household.csv", tables.HOUSEHOLD_FIELDNAMES)
