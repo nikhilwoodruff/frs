@@ -83,3 +83,5 @@ NS_VALUE_BOUNDS = {
 NS_MEAN_VALUES = {x: (y[0] + y[1]) / 2 for x, y in NS_VALUE_BOUNDS.items()}
 
 ACCOUNTS_FIELDNAMES = list(map(lambda x : x + "_income", ACCOUNT_TYPES.values())) + list(map(lambda x : x + "_pre_tax", ACCOUNT_TYPES.values())) + ["NS_value"]
+
+ACCOUNTS_ENUMS = {}

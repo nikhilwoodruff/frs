@@ -422,3 +422,15 @@ STANDARD_OCC_CLASS = {
     8000: "manufacturing",
     9000: "elementary"
 }
+
+ADULT_ENUMS = dict(
+    reason_for_absence=ABSENCE_REASON,
+    absence_pay=ABSENCE_PAY,
+    highest_qualification=QUALIFICATIONS,
+    education_type=EDU_TYPE,
+    employment_status=EMPLOYMENT_STATUS,
+    ethnicity=ETHNIC_GROUP_BASE,
+    ethicity_detailed=ETHNIC_GROUP_FINE,
+    marital_status=MARITAL_STATUS,
+    standard_occ_class=STANDARD_OCC_CLASS
+)
