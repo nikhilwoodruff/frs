@@ -13,6 +13,7 @@ from termcolor import colored
 import json
 import warnings
 import webbrowser
+from frs.post_processing import run_adjustments
 
 init()
 
@@ -145,10 +146,11 @@ def write_files():
                 data=data[entity]
             )
 
-    write_file(person_data, "t_person.csv", tables.PERSON_FIELDNAMES)
-    write_file(benunit_data, "t_benunit.csv", tables.BENUNIT_FIELDNAMES)
-    write_file(household_data, "t_household.csv", tables.HOUSEHOLD_FIELDNAMES)
+    write_file(person_data, "person.csv", tables.PERSON_FIELDNAMES)
+    write_file(benunit_data, "benunit.csv", tables.BENUNIT_FIELDNAMES)
+    write_file(household_data, "household.csv", tables.HOUSEHOLD_FIELDNAMES)
 
+    run_adjustments()
 
 def main():
     ensure_folders_exist()

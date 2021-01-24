@@ -22,8 +22,8 @@ def parse_household(line, household):
 
     household["council_tax_discount"] = COUNCIL_TAX_DISCOUNT[safe(line["CT25D50D"])]
     household["council_tax_band"] = COUNCIL_TAX_BAND[safe(line["CTBAND"])]
-    household["council_tax"] = safe(line["CTANNUAL"])
     household["council_tax_benefit"] = yearly(line["CTREBAMT"], from_period=line["CTREBPD"])
+    household["council_tax"] = (safe(line["CTANNUAL"]) - household["council_tax_benefit"]) / (1 - household["council_tax_discount"])
 
     household["total_housing_costs"] = yearly(line["GBHSCOST"]) + yearly(line["NIHSCOST"])
 

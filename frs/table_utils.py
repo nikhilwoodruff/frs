@@ -1,3 +1,5 @@
+import os
+
 WEEK = 1
 MONTH = 5
 YEAR = 52
@@ -20,6 +22,9 @@ PERIOD_CODES = {
     95: 52,
     97: 1000,
 }
+
+def resolve(filename):
+    return os.path.join(os.path.dirname(__file__), filename)
 
 def exists(field):
     """Determines if there is a numeric value in the field
