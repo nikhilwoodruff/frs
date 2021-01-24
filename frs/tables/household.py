@@ -1,6 +1,7 @@
 from frs.table_utils import *
 
 def parse_household(line, household):
+    household["household_id"] = household_id(line)
     household["num_bedrooms"] = safe(line["BEDROOM6"])
     household["num_benunits"] = safe(line["BENUNITS"])
 
@@ -113,7 +114,45 @@ COUNCIL_TAX_BAND = {
     10: "unknown"
 }
 
-HOUSEHOLD_FIELDNAMES = []
+HOUSEHOLD_FIELDNAMES = [
+    "household_id",
+    "num_bedrooms",
+    "num_benunits",
+    "ground_rent",
+    "chief_rent",
+    "service_charge",
+    "regular_maintenance",
+    "site_rent",
+    "factoring",
+    "other_regular_charges",
+    "combined_services",
+    "country",
+    "building_insured",
+    "contents_insured",
+    "council_tax_discount",
+    "council_tax_band",
+    "council_tax",
+    "council_tax_benefit",
+    "total_housing_costs",
+    "household_weight",
+    "region",
+    "rent",
+    "is_shared",
+    "in_inner_london",
+    "in_outer_london",
+    "household_type",
+    "domestic_rates",
+    "business_rooms",
+    "num_rooms",
+    "rates_rebate",
+    "rate_relief",
+    "sewerage_rate",
+    "insurance_premium",
+    "rent_from_subletting",
+    "tenure",
+    "water_rate",
+    "is_social"
+]
 
 HOUSEHOLD_ENUMS = dict(
     country=COUNTRIES,
