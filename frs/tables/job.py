@@ -21,7 +21,7 @@ def parse_job(line, person):
     person["paid_hourly"] = safe(line["HOURLY"]) == 1
     person["basic_hourly_rate"] = safe(line["HRRATE"])
 
-    person["NI_deducted"] += yearly(line["NATINS"], from_period=line["GRWAGPD"])
+    person["NI_reported"] += yearly(line["SENIRAMT"], from_period=line["SENIRPD"]) + yearly(line["NATINS"], from_period=line["GRWAGPD"])
     person["take_home_pay"] += yearly(line["PAYAMT"], from_period=line["PAYPD"])
     person["PAYE_deducted"] += yearly(line["PAYE"], from_period=line["PAYPD"])
 
@@ -33,7 +33,6 @@ def parse_job(line, person):
 
     person["income_tax_reported"] += safe(line["SETAXAMT"]) + yearly(line["TAXDAMT"], from_period=line["TAXDPD"])
     person["NI_lump_sum_reported"] += safe(line["SENIIAMT"]) + safe(line["SENILAMT"])
-    person["NI_reported"] += yearly(line["SENIRAMT"], from_period=line["SENIRPD"])
     if safe(line["PROFIT2"]) == 2:
         person["gross_profit"] *= -1
     
@@ -52,10 +51,37 @@ def parse_job(line, person):
 
     person["weekly_unpaid_overtime"] += safe(line["UOTHR"])
 
-    person[""]
-
     return person
 
-JOB_FIELDNAMES = []
+JOB_FIELDNAMES = [
+    "gross_wage",
+    "pension_deductions",
+    "AVC_deductions",
+    "union_fee_deductions",
+    "friendly_soc_deductions",
+    "club_deductions",
+    "loan_repayment_deductions",
+    "medical_insurance_deductions",
+    "charity_deductions",
+    "student_loan_deductions",
+    "pension_deductions",
+    "num_FT_jobs",
+    "num_PT_jobs",
+    "paid_hourly",
+    "basic_hourly_rate",
+    "NI_reported",
+    "take_home_pay",
+    "PAYE_deducted",
+    "income_tax_reported",
+    "gross_profit",
+    "NI_lump_sum_reported",
+    "salary_sacrifice_pension",
+    "SPP",
+    "SSP",
+    "SMP",
+    "SAP",
+    "SHPP",
+    "weekly_unpaid_overtime"
+]
 
 JOB_ENUMS = {}
