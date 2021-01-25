@@ -18,7 +18,7 @@ def parse_child(line, person):
     person["social_difficulty"] = safe(line["CDISD09"]) == 1
     person["other_difficulty"] = safe(line["CDISD10"]) == 1
 
-    person["bursary_fund"] = yearly(line["CHBFDAMT"], from_period=line["CHBFDPD"])
+    person["bursary_fund"] = yearly(line["CHBFDAMT"])
 
     person["earnings"] = yearly(line["CHEARNS"])
     
@@ -44,11 +44,15 @@ def parse_child(line, person):
     person["is_male"] = safe(line["SEX"]) == 1
     person["is_female"] = safe(line["SEX"]) == 2
 
-    person["tax_free_childcare_paid_in"] = yearly(safe(line["TFCAMT"], line["UTFCAMT"]), from_period=safe(line["TFCPD"], line["UTFCPD"]))
-    person["tax_free_childcare_paid_out"] = yearly(safe(line["TFCOAMT"], line["UTFCOAMT"]), from_period=safe(line["TFCOPD"], line["UTFCOPD"]))
+    person["tax_free_childcare_paid_in"] = yearly(safe(line["TFCAMT"], line["UTFCAMT"]))
+    person["tax_free_childcare_paid_out"] = yearly(safe(line["TFCOAMT"], line["UTFCOAMT"]))
     person["est_value"] = safe(line["TOTSAVE"])
     person["edu_grants"] = yearly(line["TOTGNTCH"])
     person["school_type"] = SCHOOL_TYPE[safe(line["TYPEED2"])]
+    
+    person["person_id"] = person_id(line)
+    person["benunit_id"] = benunit_id(line)
+    person["household_id"] = household_id(line)
 
     person["is_benunit_head"] = False
     person["is_household_head"] = False

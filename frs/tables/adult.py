@@ -10,18 +10,18 @@ def parse_adult(line, person):
     person["absence_pay"] = ABSENCE_PAY[safe(line["ABSPAY"])]
 
     # accounts
-    person["access_fund"] = yearly(line["ACCSSAMT"], from_period=line["ACCSSPD"])
+    person["access_fund"] = yearly(line["ACCSSAMT"])
     person["has_direct_payment_account"] = safe(line["ACTACCI"]) == 1
-    person["EMA"] = yearly(line["ADEMAAMT"], from_period=line["ADEMAPD"])
+    person["EMA"] = yearly(line["ADEMAAMT"])
 
     person["age"] = safe(line["AGE80"])
 
     # allowances
-    person["self_maintenance_payments"] = yearly(safe(line["ALUAMT"], line["ALIAMT"]), from_period=safe(line["ALUPD"], line["ALIPD"]))
-    person["allowance_from_friend"] = yearly(line["ALLPAY1"], from_period=line["ALLPD1"])
-    person["allowance_from_org"] = yearly(line["ALLPAY2"], from_period=line["ALLPD2"])
-    person["allowance_from_LA_fostered"] = yearly(line["ALLPAY3"], from_period=line["ALLPD3"])
-    person["allowance_from_LA_adoption"] = yearly(line["ALLPAY4"], from_period=line["ALLPD4"])
+    person["self_maintenance_payments"] = yearly(safe(line["ALUAMT"], line["ALIAMT"]))
+    person["allowance_from_friend"] = yearly(line["ALLPAY1"])
+    person["allowance_from_org"] = yearly(line["ALLPAY2"])
+    person["allowance_from_LA_fostered"] = yearly(line["ALLPAY3"])
+    person["allowance_from_LA_adoption"] = yearly(line["ALLPAY4"])
 
     # accounts
     person["has_funds"] = safe(line["ANYMON"]) == 1
@@ -33,14 +33,14 @@ def parse_adult(line, person):
     person["num_trusts"] = safe(line["ANYPNNM5"])
 
     # partner
-    person["absent_partner_payment"] = yearly(line["APAMT"], from_period=line["APPD"])
+    person["absent_partner_payment"] = yearly(line["APAMT"])
     person["received_babybox"] = safe(line["BABYBOX"]) == 1
 
     person["person_id"] = person_id(line)
     person["benunit_id"] = benunit_id(line)
     person["household_id"] = household_id(line)
 
-    person["bursary_fund"] = yearly(line["BFDAMT"], from_period=line["BFDPD"])
+    person["bursary_fund"] = yearly(line["BFDAMT"])
 
     person["is_informal_carer"] = safe(line["CAREFL"]) == 1
 
@@ -105,16 +105,16 @@ def parse_adult(line, person):
     person["in_private_sector"] = safe(line["MJOBSECT"]) == 1
     person["in_public_sector"] = safe(line["MJOBSECT"]) == 2
 
-    person["maintenance_arrangement_payments"] = yearly(line["MNTAMT1"], from_period=line["MNTPD1"])
-    person["payments_to_absent_partner"] = yearly(line["OTAPAMT"], from_period=line["OTAPPD"])
-    person["parental_contributions"] = yearly(line["PAREAMT"], from_period=line["PAREPD"])
+    person["maintenance_arrangement_payments"] = yearly(line["MNTAMT1"])
+    person["payments_to_absent_partner"] = yearly(line["OTAPAMT"])
+    person["parental_contributions"] = yearly(line["PAREAMT"])
 
     person["rental_income"] = yearly(line["ROYYR1"])
     
     person["is_male"] = safe(line["SEX"]) == 1
     person["is_female"] = safe(line["SEX"]) == 2
     
-    person["student_loan_repayments"] = yearly(line["SLREPAMT"], from_period=line["SLREPPD"])
+    person["student_loan_repayments"] = yearly(line["SLREPAMT"])
     
     person["standard_occ_class"] = STANDARD_OCC_CLASS[safe(line["SOC2010"])]
 
@@ -122,8 +122,8 @@ def parse_adult(line, person):
     person["is_partial_sighted"] = safe(line["SPCREG2"]) == 1
     person["is_deaf"] = safe(line["SPCREG3"]) == 1
 
-    person["edu_grants"] = safe(line["TOTGRANT"])
-    person["weekly_hours"] = safe(line["TOTHOURS"])
+    person["edu_grants"] = yearly(line["TOTGRANT"])
+    person["hours"] = yearly(line["TOTHOURS"])
 
     person["misc_income"] = yearly(line["INRINC"])
     return person

@@ -4,7 +4,7 @@ from frs.tables.accounts import ACCOUNT_TYPES
 def parse_benefit(line, person):
     if safe(line["BENEFIT"]) in BENEFITS:
         benefit = BENEFITS[safe(line["BENEFIT"])]
-        amount = yearly(safe(line["BENAMT"], line["NOTUSAMT"]), from_period=safe(line["BENPD"], line["NOTUSPD"]))
+        amount = yearly(safe(line["BENAMT"], line["NOTUSAMT"]))
         if benefit == "JSA":
             JSA_type = JSA_ESA_TYPES[int(safe(line["VAR2"]))]
             benefit = benefit.replace("JSA", f"JSA_{JSA_type}")

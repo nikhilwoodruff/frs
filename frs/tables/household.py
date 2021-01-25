@@ -6,14 +6,14 @@ def parse_household(line, household):
     household["num_benunits"] = safe(line["BENUNITS"])
 
     # bills
-    household["ground_rent"] = yearly(line["CHRGAMT1"], from_period=line["CHRGPD1"])
-    household["chief_rent"] = yearly(line["CHRGAMT3"], from_period=line["CHRGPD3"])
-    household["service_charge"] = yearly(line["CHRGAMT4"], from_period=line["CHRGPD4"])
-    household["regular_maintenance"] = yearly(line["CHRGAMT5"], from_period=line["CHRGPD5"])
-    household["site_rent"] = yearly(line["CHRGAMT6"], from_period=line["CHRGPD6"])
-    household["factoring"] = yearly(line["CHRGAMT7"], from_period=line["CHRGPD7"])
-    household["other_regular_charges"] = yearly(line["CHRGAMT8"], from_period=line["CHRGPD8"])
-    household["combined_services"] = yearly(line["CHRGAMT9"], from_period=line["CHRGPD9"])
+    household["ground_rent"] = yearly(line["CHRGAMT1"])
+    household["chief_rent"] = yearly(line["CHRGAMT3"])
+    household["service_charge"] = yearly(line["CHRGAMT4"])
+    household["regular_maintenance"] = yearly(line["CHRGAMT5"])
+    household["site_rent"] = yearly(line["CHRGAMT6"])
+    household["factoring"] = yearly(line["CHRGAMT7"])
+    household["other_regular_charges"] = yearly(line["CHRGAMT8"])
+    household["combined_services"] = yearly(line["CHRGAMT9"])
 
     household["country"] = COUNTRIES[safe(line["COUNTRY"])]
 
@@ -22,7 +22,7 @@ def parse_household(line, household):
 
     household["council_tax_discount"] = COUNCIL_TAX_DISCOUNT[safe(line["CT25D50D"])]
     household["council_tax_band"] = COUNCIL_TAX_BAND[safe(line["CTBAND"])]
-    household["council_tax_benefit"] = yearly(line["CTREBAMT"], from_period=line["CTREBPD"])
+    household["council_tax_benefit"] = yearly(line["CTREBAMT"])
     household["council_tax"] = (safe(line["CTANNUAL"]) - household["council_tax_benefit"]) / (1 - household["council_tax_discount"])
 
     household["total_housing_costs"] = yearly(line["GBHSCOST"]) + yearly(line["NIHSCOST"])
@@ -41,8 +41,8 @@ def parse_household(line, household):
     household["business_rooms"] = safe(line["PTBSROOM"])
     household["num_rooms"] = safe(line["ROOMS10"])
 
-    household["rates_rebate"] = yearly(line["RTREBAMT"], from_period=line["RTTIMEPD"])
-    household["rate_relief"] = yearly(line["RTRTRAMT"], from_period=line["RTTIMEPD"])
+    household["rates_rebate"] = yearly(line["RTREBAMT"])
+    household["rate_relief"] = yearly(line["RTRTRAMT"])
     household["sewerage_rate"] = yearly(line["SEWANUL"])
 
     household["insurance_premium"] = yearly(line["STRAMT2"])
