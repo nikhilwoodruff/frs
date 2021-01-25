@@ -122,7 +122,7 @@ def parse_adult(line, person):
     person["is_partial_sighted"] = safe(line["SPCREG2"]) == 1
     person["is_deaf"] = safe(line["SPCREG3"]) == 1
 
-    person["edu_grants"] = yearly(line["TOTGRANT"])
+    person["edu_grants"] = safe(line["TOTGRANT"])
     person["hours"] = yearly(line["TOTHOURS"])
 
     person["misc_income"] = yearly(line["INRINC"])
@@ -426,8 +426,7 @@ ADULT_FIELDNAMES = [
     "is_blind",
     "is_partial_sighted",
     "is_deaf",
-    "FE_grants",
-    "weekly_hours",
+    "hours",
     "misc_income"
 ]
 

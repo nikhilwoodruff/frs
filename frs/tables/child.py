@@ -20,7 +20,8 @@ def parse_child(line, person):
 
     person["bursary_fund"] = yearly(line["CHBFDAMT"])
 
-    person["earnings"] = yearly(line["CHEARNS"])
+    person["earnings"] = yearly(line["CHEARNS1"]) + yearly(line["CHEARNS2"])
+    person["trust_income"] = yearly(line["CHEARNS3"])
     
     person["is_boarder"] = safe(line["CONVBL"]) == 1
     person["is_lodger"] = safe(line["CONVBL"]) == 2
@@ -37,6 +38,8 @@ def parse_child(line, person):
     person["is_blind"] = safe(line["SPCREG1"]) == 1
     person["is_partial_sighted"] = safe(line["SPCREG2"]) == 1
     person["is_deaf"] = safe(line["SPCREG3"]) == 1
+
+    person["EMA"] = yearly("CHEMAAMT")
 
     if safe(line["MS"]) in MARITAL_STATUS:
         person["marital_status"] = MARITAL_STATUS[safe(line["MS"])]
@@ -69,7 +72,8 @@ CHILD_FIELDNAMES = [
     "tax_free_childcare_paid_out",
     "est_value",
     "edu_grants",
-    "school_type"
+    "school_type",
+    "trust_income"
 ]
 
 SCHOOL_TYPE = {
