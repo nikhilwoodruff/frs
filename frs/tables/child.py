@@ -1,6 +1,7 @@
 from frs.table_utils import *
 from frs.tables.adult import MARITAL_STATUS
 
+
 def parse_child(line, person):
     person["is_adult"] = False
     person["is_child"] = True
@@ -22,7 +23,7 @@ def parse_child(line, person):
 
     person["earnings"] = yearly(line["CHEARNS1"]) + yearly(line["CHEARNS2"])
     person["trust_income"] = yearly(line["CHEARNS3"])
-    
+
     person["is_boarder"] = safe(line["CONVBL"]) == 1
     person["is_lodger"] = safe(line["CONVBL"]) == 2
 
@@ -45,16 +46,19 @@ def parse_child(line, person):
         person["marital_status"] = MARITAL_STATUS[safe(line["MS"])]
         person["is_married"] = person["marital_status"] == "married"
 
-
     person["is_male"] = safe(line["SEX"]) == 1
     person["is_female"] = safe(line["SEX"]) == 2
 
-    person["tax_free_childcare_paid_in"] = yearly(safe(line["TFCAMT"], line["UTFCAMT"]))
-    person["tax_free_childcare_paid_out"] = yearly(safe(line["TFCOAMT"], line["UTFCOAMT"]))
+    person["tax_free_childcare_paid_in"] = yearly(
+        safe(line["TFCAMT"], line["UTFCAMT"])
+    )
+    person["tax_free_childcare_paid_out"] = yearly(
+        safe(line["TFCOAMT"], line["UTFCOAMT"])
+    )
     person["est_value"] = safe(line["TOTSAVE"])
     person["edu_grants"] = yearly(line["TOTGNTCH"])
     person["school_type"] = SCHOOL_TYPE[safe(line["TYPEED2"])]
-    
+
     person["person_id"] = person_id(line)
     person["benunit_id"] = benunit_id(line)
     person["household_id"] = household_id(line)
@@ -64,6 +68,7 @@ def parse_child(line, person):
 
     person["misc_income"] = yearly(line["CHRINC"])
     return person
+
 
 CHILD_FIELDNAMES = [
     "free_school_breakfast",
@@ -75,7 +80,7 @@ CHILD_FIELDNAMES = [
     "est_value",
     "edu_grants",
     "school_type",
-    "trust_income"
+    "trust_income",
 ]
 
 SCHOOL_TYPE = {
@@ -88,9 +93,7 @@ SCHOOL_TYPE = {
     6: "secondary_school",
     7: "non_adv_FE",
     8: "private",
-    9: "HE"
+    9: "HE",
 }
 
-CHILD_ENUMS = dict(
-    school_type=SCHOOL_TYPE
-)
+CHILD_ENUMS = dict(school_type=SCHOOL_TYPE)

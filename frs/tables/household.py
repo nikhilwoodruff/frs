@@ -1,5 +1,6 @@
 from frs.table_utils import *
 
+
 def parse_household(line, household):
     household["household_id"] = household_id(line)
     household["num_bedrooms"] = safe(line["BEDROOM6"])
@@ -20,12 +21,18 @@ def parse_household(line, household):
     household["building_insured"] = safe(line["COVOTHS"]) in [1, 2]
     household["contents_insured"] = safe(line["COVOTHS"]) == 2
 
-    household["council_tax_discount"] = COUNCIL_TAX_DISCOUNT[safe(line["CT25D50D"])]
+    household["council_tax_discount"] = COUNCIL_TAX_DISCOUNT[
+        safe(line["CT25D50D"])
+    ]
     household["council_tax_band"] = COUNCIL_TAX_BAND[safe(line["CTBAND"])]
     household["council_tax_benefit"] = yearly(line["CTREBAMT"])
-    household["council_tax"] = (safe(line["CTANNUAL"]) - household["council_tax_benefit"]) / (1 - household["council_tax_discount"])
+    household["council_tax"] = (
+        safe(line["CTANNUAL"]) - household["council_tax_benefit"]
+    ) / (1 - household["council_tax_discount"])
 
-    household["total_housing_costs"] = yearly(line["GBHSCOST"]) + yearly(line["NIHSCOST"])
+    household["total_housing_costs"] = yearly(line["GBHSCOST"]) + yearly(
+        line["NIHSCOST"]
+    )
 
     household["household_weight"] = safe(line["GROSS4"])
 
@@ -52,6 +59,7 @@ def parse_household(line, household):
     household["is_social"] = safe(line["PTENTYP2"]) in [1, 2]
     return household
 
+
 TENURE = {
     NO_DATA: "owned",
     1: "owned",
@@ -59,7 +67,7 @@ TENURE = {
     3: "part_own_part_rent",
     4: "rented",
     5: "rent_free",
-    6: "squatting"
+    6: "squatting",
 }
 
 HOUSEHOLD_TYPE = {
@@ -67,7 +75,7 @@ HOUSEHOLD_TYPE = {
     1: "house",
     2: "flat",
     3: "room",
-    4: "other"
+    4: "other",
 }
 
 COUNTRIES = {
@@ -75,7 +83,7 @@ COUNTRIES = {
     1: "england",
     2: "wales",
     3: "scotland",
-    4: "northern_ireland"
+    4: "northern_ireland",
 }
 
 REGIONS = {
@@ -91,14 +99,10 @@ REGIONS = {
     10: "south_west",
     11: "wales",
     12: "scotland",
-    13: "northern_ireland"
+    13: "northern_ireland",
 }
 
-COUNCIL_TAX_DISCOUNT = {
-    0: 0,
-    1: 0.25,
-    2: 0.5
-}
+COUNCIL_TAX_DISCOUNT = {0: 0, 1: 0.25, 2: 0.5}
 
 COUNCIL_TAX_BAND = {
     NO_DATA: "unknown",
@@ -111,7 +115,7 @@ COUNCIL_TAX_BAND = {
     7: "G",
     8: "H",
     9: "I",
-    10: "unknown"
+    10: "unknown",
 }
 
 HOUSEHOLD_FIELDNAMES = [
@@ -151,7 +155,7 @@ HOUSEHOLD_FIELDNAMES = [
     "rent_from_subletting",
     "tenure",
     "water_rate",
-    "is_social"
+    "is_social",
 ]
 
 HOUSEHOLD_ENUMS = dict(
@@ -159,5 +163,5 @@ HOUSEHOLD_ENUMS = dict(
     council_tax_band=COUNCIL_TAX_BAND,
     region=REGIONS,
     household_type=HOUSEHOLD_TYPE,
-    tenure=TENURE
+    tenure=TENURE,
 )

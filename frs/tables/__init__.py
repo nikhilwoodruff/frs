@@ -35,11 +35,7 @@ PERSON_FIELDNAMES = (
     + PENSION_PROVISION_FIELDNAMES
     + PENSION_FIELDNAMES
 )
-BENUNIT_FIELDNAMES = (
-    BENUNIT_FIELDNAMES 
-    + CARE_FIELDNAMES
-    + EXTCHILD_FILENAMES
-)
+BENUNIT_FIELDNAMES = BENUNIT_FIELDNAMES + CARE_FIELDNAMES + EXTCHILD_FILENAMES
 HOUSEHOLD_FIELDNAMES = (
     ENDOWMENT_FIELDNAMES
     + HOUSEHOLD_FIELDNAMES
@@ -72,5 +68,5 @@ parse_func = dict(
     penprov=parse_pension_provision,
     pension=parse_pension,
     rentcont=parse_rent_contribution,
-    renter=parse_renter
+    renter=parse_renter,
 )

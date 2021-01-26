@@ -116,12 +116,15 @@ def ensure_folders_exist():
     if "raw" not in os.listdir(path):
         os.makedirs(os.path.join(path, "raw"))
 
+
 def write_files():
     """
     Write OpenFisca-UK input CSV files.
     """
     person_data, benunit_data, household_data = {}, {}, {}
-    data = dict(person=person_data, benunit=benunit_data, household=household_data)
+    data = dict(
+        person=person_data, benunit=benunit_data, household=household_data
+    )
     for filename in os.listdir(resolve("raw")):
         name = filename.replace(".tab", "")
         if name in tables.parse_func:
@@ -143,7 +146,7 @@ def write_files():
                 id_func,
                 parse_function,
                 initial_fields=initial_fields,
-                data=data[entity]
+                data=data[entity],
             )
 
     write_file(person_data, "person.csv", tables.PERSON_FIELDNAMES)
@@ -151,6 +154,7 @@ def write_files():
     write_file(household_data, "household.csv", tables.HOUSEHOLD_FIELDNAMES)
 
     run_adjustments()
+
 
 def main():
     ensure_folders_exist()
@@ -247,6 +251,7 @@ def load():
         pd.read_csv(resolve(os.path.join("csv", filename)), low_memory=False)
         for filename in ("person.csv", "benunit.csv", "household.csv")
     ]
+
 
 if __name__ == "__main__":
     main()

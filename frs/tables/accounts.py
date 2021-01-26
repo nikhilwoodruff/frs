@@ -1,5 +1,6 @@
 from frs.table_utils import *
 
+
 def parse_account(line, person):
     """Parse account.tab values into person-level data.
 
@@ -59,7 +60,7 @@ ACCOUNT_TYPES = {
     27: "basic_account",
     28: "credit_unions",
     29: "EPNL",
-    30: "post_office_card_account"
+    30: "post_office_card_account",
 }
 
 POST_TAX_CODE = 1
@@ -77,11 +78,15 @@ NS_VALUE_BOUNDS = {
     9: (5001, 10000),
     10: (10001, 20000),
     11: (20001, 30000),
-    12: (30001, 30001)
+    12: (30001, 30001),
 }
 
 NS_MEAN_VALUES = {x: (y[0] + y[1]) / 2 for x, y in NS_VALUE_BOUNDS.items()}
 
-ACCOUNTS_FIELDNAMES = list(map(lambda x : x + "_income", ACCOUNT_TYPES.values())) + list(map(lambda x : x + "_pre_tax", ACCOUNT_TYPES.values())) + ["NS_value"]
+ACCOUNTS_FIELDNAMES = (
+    list(map(lambda x: x + "_income", ACCOUNT_TYPES.values()))
+    + list(map(lambda x: x + "_pre_tax", ACCOUNT_TYPES.values()))
+    + ["NS_value"]
+)
 
 ACCOUNTS_ENUMS = {}

@@ -1,5 +1,6 @@
 from frs.frs_params import *
 
+
 def exists(field):
     """Determines if there is a numeric value in the field
 
@@ -58,19 +59,24 @@ def adjust_period(value, period_code=WEEK, target_period_code=YEAR):
     )
     return float(value) * relative_size
 
+
 # Recognising an ID:
 # First digit: 1=person, 2=benunit, 3=household
 # Digits 2-(n-1): household id
 # Last digit: entity index within household
 
+
 def person_id(line):
     return 1000000 + int(line["sernum"]) * 10 + int(line["PERSON"])
+
 
 def benunit_id(line):
     return 2000000 + int(line["sernum"]) * 10 + int(line["BENUNIT"])
 
+
 def household_id(line):
     return 3000000 + int(line["sernum"]) * 10
+
 
 def parse_account(line, person):
     return person

@@ -1,5 +1,6 @@
 from frs.table_utils import *
 
+
 def parse_adult(line, person):
     person["is_adult"] = True
     person["is_child"] = False
@@ -17,7 +18,9 @@ def parse_adult(line, person):
     person["age"] = safe(line["AGE80"])
 
     # allowances
-    person["alimony_payments_received"] = yearly(safe(line["ALUAMT"], line["ALIAMT"]))
+    person["alimony_payments_received"] = yearly(
+        safe(line["ALUAMT"], line["ALIAMT"])
+    )
     person["allowance_from_friend"] = yearly(line["ALLPAY1"])
     person["allowance_from_org"] = yearly(line["ALLPAY2"])
     person["allowance_from_LA_fostered"] = yearly(line["ALLPAY3"])
@@ -87,11 +90,11 @@ def parse_adult(line, person):
     person["adult_weight"] = safe(line["GROSS4"])
 
     person["long_standing_illness"] = safe(line["HEALTH1"]) == 1
-    
+
     # care
     person["care_hours_received"] = safe(line["HOURCARE"])
     person["care_hours_given"] = HOURS_CODES_MEAN_VALUES[safe(line["HOURTOT"])]
-    
+
     # income
     # person["profit"] = yearly(line["INCSEO2"]) # take from JOB instead
     # person["earnings"] = yearly(line["INEARNS"]) # take from JOB instead
@@ -111,12 +114,12 @@ def parse_adult(line, person):
     person["parental_contributions"] = yearly(line["PAREAMT"])
 
     person["rental_income"] = yearly(line["ROYYR1"])
-    
+
     person["is_male"] = safe(line["SEX"]) == 1
     person["is_female"] = safe(line["SEX"]) == 2
-    
+
     person["student_loan_repayments"] = yearly(line["SLREPAMT"])
-    
+
     person["standard_occ_class"] = STANDARD_OCC_CLASS[safe(line["SOC2010"])]
 
     person["is_blind"] = safe(line["SPCREG1"]) == 1
@@ -128,6 +131,7 @@ def parse_adult(line, person):
 
     person["misc_income"] = yearly(line["INRINC"])
     return person
+
 
 ACCOUNT_ESTIMATES = {
     NO_DATA: (0, 0),
@@ -144,11 +148,12 @@ ACCOUNT_ESTIMATES = {
     10: (5001, 10000),
     11: (10001, 20000),
     12: (20001, 30000),
-    13: (30001, 30001)
+    13: (30001, 30001),
 }
 
-ACCOUNT_ESTIMATES_MEAN = {x: (y[0] + y[1]) / 2 for x, y in ACCOUNT_ESTIMATES.items()}
-
+ACCOUNT_ESTIMATES_MEAN = {
+    x: (y[0] + y[1]) / 2 for x, y in ACCOUNT_ESTIMATES.items()
+}
 
 
 ABSENCE_REASON = {
@@ -162,7 +167,7 @@ ABSENCE_REASON = {
     7: "paternity_leave",
     8: "compassionate_leave",
     9: "parental_leave",
-    10: "other"
+    10: "other",
 }
 
 ABSENCE_PAY = {
@@ -170,7 +175,7 @@ ABSENCE_PAY = {
     1: "full_pay",
     2: "over_half_pay",
     3: "under_half_pay",
-    4: "no_pay"
+    4: "no_pay",
 }
 
 QUALIFICATIONS = {
@@ -260,7 +265,7 @@ QUALIFICATIONS = {
     83: "basic_skills",
     84: "entry_level_qual",
     85: "entry_level_award",
-    86: "other_qual"
+    86: "other_qual",
 }
 
 EDU_TYPE = {
@@ -274,7 +279,7 @@ EDU_TYPE = {
     7: "open_college",
     8: "open_university",
     9: "other_correspondence_course",
-    10: "other_course"
+    10: "other_course",
 }
 
 EMPLOYMENT_STATUS = {
@@ -292,7 +297,7 @@ EMPLOYMENT_STATUS = {
     11: "temp_sick",
     12: "long_term_sick",
     13: "student",
-    14: "unpaid_family_worker"
+    14: "unpaid_family_worker",
 }
 
 ETHNIC_GROUP_BASE = {
@@ -301,7 +306,7 @@ ETHNIC_GROUP_BASE = {
     2: "mixed",
     3: "asian",
     4: "black",
-    5: "other"
+    5: "other",
 }
 
 ETHNIC_GROUP_FINE = {
@@ -323,7 +328,7 @@ ETHNIC_GROUP_FINE = {
     15: "black_caribbean",
     16: "black_other",
     17: "arab",
-    18: "other"
+    18: "other",
 }
 
 MARITAL_STATUS = {
@@ -333,7 +338,7 @@ MARITAL_STATUS = {
     3: "single",
     4: "widowed",
     5: "separated",
-    6: "divorced"
+    6: "divorced",
 }
 
 STANDARD_OCC_CLASS = {
@@ -346,7 +351,7 @@ STANDARD_OCC_CLASS = {
     6000: "care",
     7000: "sales",
     8000: "manufacturing",
-    9000: "elementary"
+    9000: "elementary",
 }
 
 ADULT_FIELDNAMES = [
@@ -426,7 +431,7 @@ ADULT_FIELDNAMES = [
     "is_deaf",
     "hours",
     "misc_income",
-    "is_married"
+    "is_married",
 ]
 
 ADULT_ENUMS = dict(
@@ -438,5 +443,5 @@ ADULT_ENUMS = dict(
     ethnicity=ETHNIC_GROUP_BASE,
     ethicity_detailed=ETHNIC_GROUP_FINE,
     marital_status=MARITAL_STATUS,
-    standard_occ_class=STANDARD_OCC_CLASS
+    standard_occ_class=STANDARD_OCC_CLASS,
 )
