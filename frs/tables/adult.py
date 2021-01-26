@@ -17,14 +17,14 @@ def parse_adult(line, person):
     person["age"] = safe(line["AGE80"])
 
     # allowances
-    person["self_maintenance_payments"] = yearly(safe(line["ALUAMT"], line["ALIAMT"]))
+    person["alimony_payments_received"] = yearly(safe(line["ALUAMT"], line["ALIAMT"]))
     person["allowance_from_friend"] = yearly(line["ALLPAY1"])
     person["allowance_from_org"] = yearly(line["ALLPAY2"])
     person["allowance_from_LA_fostered"] = yearly(line["ALLPAY3"])
     person["allowance_from_LA_adoption"] = yearly(line["ALLPAY4"])
 
     # accounts
-    person["has_funds"] = safe(line["ANYMON"]) == 1
+    person["has_funds"] = safe(line["ANYMON"]) != 2
     person["in_education"] = safe(line["ANYED"]) == 1
     person["num_employee_pensions"] = safe(line["ANYPNNM1"])
     person["num_individual_pensions"] = safe(line["ANYPNNM2"])
@@ -33,7 +33,7 @@ def parse_adult(line, person):
     person["num_trusts"] = safe(line["ANYPNNM5"])
 
     # partner
-    person["absent_partner_payment"] = yearly(line["APAMT"])
+    person["payments_to_absent_partner"] = yearly(line["APAMT"])
     person["received_babybox"] = safe(line["BABYBOX"]) == 1
 
     person["person_id"] = person_id(line)
@@ -93,19 +93,20 @@ def parse_adult(line, person):
     person["care_hours_given"] = HOURS_CODES_MEAN_VALUES[safe(line["HOURTOT"])]
     
     # income
-    person["profit"] = yearly(line["INCSEO2"])
-    person["earnings"] = yearly(line["INEARNS"])
-    person["pension_income"] = yearly(line["INPENINC"])
+    # person["profit"] = yearly(line["INCSEO2"]) # take from JOB instead
+    # person["earnings"] = yearly(line["INEARNS"]) # take from JOB instead
+    # person["pension_income"] = yearly(line["INPENINC"]) # take from PENSION instead
     person["free_TV_license_value"] = yearly(line["INTVLIC"])
     person["FRS_net_income"] = yearly(line["NINDINC"])
 
     person["registered_disabled"] = safe(line["LAREG"]) == 1
     person["marital_status"] = MARITAL_STATUS[safe(line["MARITAL"])]
+    person["is_married"] = person["marital_status"] == "married"
 
     person["in_private_sector"] = safe(line["MJOBSECT"]) == 1
     person["in_public_sector"] = safe(line["MJOBSECT"]) == 2
 
-    person["maintenance_arrangement_payments"] = yearly(line["MNTAMT1"])
+    person["child_maintenance_received"] = yearly(line["MNTAMT1"])
     person["payments_to_absent_partner"] = yearly(line["OTAPAMT"])
     person["parental_contributions"] = yearly(line["PAREAMT"])
 
@@ -358,7 +359,7 @@ ADULT_FIELDNAMES = [
     "has_direct_payment_account",
     "EMA",
     "age",
-    "self_maintenance_payments",
+    "alimony_payments_received",
     "allowance_from_friend",
     "allowance_from_org",
     "allowance_from_LA_fostered",
@@ -406,16 +407,13 @@ ADULT_FIELDNAMES = [
     "long_standing_illness",
     "care_hours_received",
     "care_hours_given",
-    "profit",
-    "earnings",
-    "pension_income",
     "free_TV_license_value",
     "FRS_net_income",
     "registered_disabled",
     "marital_status",
     "in_private_sector",
     "in_public_sector",
-    "maintenance_arrangement_payments",
+    "child_maintenance_received",
     "payments_to_absent_partner",
     "parental_contributions",
     "rental_income",
@@ -427,7 +425,8 @@ ADULT_FIELDNAMES = [
     "is_partial_sighted",
     "is_deaf",
     "hours",
-    "misc_income"
+    "misc_income",
+    "is_married"
 ]
 
 ADULT_ENUMS = dict(

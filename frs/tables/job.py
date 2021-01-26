@@ -3,7 +3,7 @@ from datetime import datetime
 
 def parse_job(line, person):
     # gross wage includes benefits and is before deductions
-    person["gross_wage"] += yearly(safe(line["UGROSS"], line["GRWAGE"]))
+    person["earnings"] += yearly(safe(line["UGROSS"], line["GRWAGE"]))
     person["pension_deductions"] += yearly(safe(line["DEDUC1"], line["UDEDUC1"]))
     person["AVC_deductions"] += yearly(safe(line["DEDUC2"], line["DEDUC2"]))
     person["union_fee_deductions"] += yearly(safe(line["DEDUC3"], line["DEDUC3"]))
@@ -25,18 +25,18 @@ def parse_job(line, person):
     person["take_home_pay"] += yearly(line["PAYAMT"])
     person["PAYE_deducted"] += yearly(line["PAYE"])
 
-    person["gross_profit"] += yearly(line["PROFIT1"])
+    person["profit"] += yearly(line["PROFIT1"])
 
     person["income_tax_reported"] += safe(line["SETAXAMT"]) + yearly(line["TAXDAMT"])
     person["NI_lump_sum_reported"] += safe(line["SENIIAMT"]) + safe(line["SENILAMT"])
     if safe(line["PROFIT2"]) == 2:
-        person["gross_profit"] *= -1
+        person["profit"] *= -1
     
     if safe(line["PROFTAX"]) == 2:
-        person["gross_profit"] += person["income_tax_reported"]
+        person["profit"] += person["income_tax_reported"]
     
     if safe(line["PROFNI"]) == 2:
-        person["gross_profit"] += person["NI_reported"] + person["NI_lump_sum_reported"]
+        person["profit"] += person["NI_reported"] + person["NI_lump_sum_reported"]
     
     person["salary_sacrifice_pension"] += yearly(line["SPNAMT"])
     person["SPP"] += yearly(line["SPPAMT"])
@@ -50,7 +50,7 @@ def parse_job(line, person):
     return person
 
 JOB_FIELDNAMES = [
-    "gross_wage",
+    "earnings",
     "pension_deductions",
     "AVC_deductions",
     "union_fee_deductions",
@@ -69,7 +69,7 @@ JOB_FIELDNAMES = [
     "take_home_pay",
     "PAYE_deducted",
     "income_tax_reported",
-    "gross_profit",
+    "profit",
     "NI_lump_sum_reported",
     "salary_sacrifice_pension",
     "SPP",

@@ -43,7 +43,9 @@ def parse_child(line, person):
 
     if safe(line["MS"]) in MARITAL_STATUS:
         person["marital_status"] = MARITAL_STATUS[safe(line["MS"])]
-    
+        person["is_married"] = person["marital_status"] == "married"
+
+
     person["is_male"] = safe(line["SEX"]) == 1
     person["is_female"] = safe(line["SEX"]) == 2
 

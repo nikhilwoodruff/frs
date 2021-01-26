@@ -2,15 +2,16 @@ from frs.table_utils import *
 from frs.tables.accounts import ACCOUNT_TYPES
 
 def parse_benefit(line, person):
-    if safe(line["BENEFIT"]) in BENEFITS:
-        benefit = BENEFITS[safe(line["BENEFIT"])]
-        amount = yearly(safe(line["BENAMT"], line["NOTUSAMT"]))
-        if benefit == "JSA":
+    if safe(line["BENEFIT"]) in list(BENEFITS) + [14, 16]:
+        if safe(line["BENEFIT"]) in BENEFITS:
+            benefit = BENEFITS[safe(line["BENEFIT"])]
+        if safe(line["BENEFIT"]) == 14:
             JSA_type = JSA_ESA_TYPES[int(safe(line["VAR2"]))]
-            benefit = benefit.replace("JSA", f"JSA_{JSA_type}")
-        elif benefit == "ESA":
+            benefit = f"JSA_{JSA_type}"
+        elif safe(line["BENEFIT"]) == 16:
             ESA_type = JSA_ESA_TYPES[int(safe(line["VAR2"]))]
-            benefit = benefit.replace("ESA", f"ESA_{ESA_type}")
+            benefit = f"ESA_{ESA_type}"
+        amount = yearly(safe(line["BENAMT"], line["NOTUSAMT"]))
         person[benefit + "_reported"] = amount 
     return person
 
