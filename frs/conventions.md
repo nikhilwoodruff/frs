@@ -3,7 +3,7 @@ This document sets out the standards followed in setting variable names and any 
 
 ## Variable names
 When naming variables:
-- only contain alphabetical and underscore characters may be used
+- only alphabetical and underscore characters may be used
 - capitalised abbreviations should remain capitalised and abbreviated. Avoid abbreviating non-capitalised words, especially near capitalised abbreviated words
 - compact names where possible, but prioritise readability. If one has both the hierachical FRS dataset field documentation, and the list of variable names from this package, each variable name in this package should be matchable to the original name without any other assistance
 
