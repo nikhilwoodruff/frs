@@ -14,6 +14,7 @@ def parse_benefit(line, person):
             benefit = f"ESA_{ESA_type}"
         amount = yearly(safe(line["BENAMT"], line["NOTUSAMT"]))
         person[benefit + "_reported"] = amount
+        person["total_benefits"] += amount
     return person
 
 
@@ -83,6 +84,6 @@ JSA_ESA_TYPES = {
     6: "contrib",
 }
 
-BENEFITS_FIELDNAMES = list(map(lambda x: x + "_reported", BENEFITS.values()))
+BENEFITS_FIELDNAMES = list(map(lambda x: x + "_reported", BENEFITS.values())) + ["total_benefits"]
 
 BENEFITS_ENUMS = {}
