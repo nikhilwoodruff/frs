@@ -84,6 +84,8 @@ JSA_ESA_TYPES = {
     6: "contrib",
 }
 
-BENEFITS_FIELDNAMES = list(map(lambda x: x + "_reported", BENEFITS.values())) + ["total_benefits"]
+BENEFITS_FIELDNAMES = list(
+    map(lambda x: x + "_reported", BENEFITS.values())
+) + ["total_benefits"]
 
 BENEFITS_ENUMS = {}

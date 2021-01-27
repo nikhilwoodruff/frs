@@ -11,7 +11,9 @@ def impute_missing_council_tax():
         if row["council_tax"] > 0:
             return row["council_tax"]
         match = CT[(CT["region"] == "london") & (CT["band"] == "D")].iloc[0]
-        return np.maximum((np.random.randn(1) * match["stddev"] + match["council_tax"])[0], 0)
+        return np.maximum(
+            (np.random.randn(1) * match["stddev"] + match["council_tax"])[0], 0
+        )
 
     df["council_tax"] = df.apply(impute_CT, axis=1)
     df.to_csv(resolve("csv/household.csv"))
