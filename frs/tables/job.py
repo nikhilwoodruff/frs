@@ -4,20 +4,30 @@ from frs.table_utils import *
 def parse_job(line, person):
     if safe(line["ETYPE"]) == 1:
         person["earnings"] += yearly(safe(line["UGRSPAY\n"]))
-        person["pension_deduction"] += yearly(safe(line["DEDUC1"], line["UDEDUC1"]))
-        person["AVC_deductions"] += yearly(safe(line["DEDUC2"], line["DEDUC2"]))
-        person["union_fee_deductions"] += yearly(safe(line["DEDUC3"], line["DEDUC3"]))
+        person["pension_deduction"] += yearly(
+            safe(line["DEDUC1"], line["UDEDUC1"])
+        )
+        person["AVC_deductions"] += yearly(
+            safe(line["DEDUC2"], line["DEDUC2"])
+        )
+        person["union_fee_deductions"] += yearly(
+            safe(line["DEDUC3"], line["DEDUC3"])
+        )
         person["friendly_society_deductions"] += yearly(
             safe(line["DEDUC4"], line["DEDUC4"])
         )
-        person["club_deductions"] += yearly(safe(line["DEDUC5"], line["DEDUC5"]))
+        person["club_deductions"] += yearly(
+            safe(line["DEDUC5"], line["DEDUC5"])
+        )
         person["loan_repayment_deductions"] += yearly(
             safe(line["DEDUC6"], line["DEDUC6"])
         )
         person["medical_insurance_deductions"] += yearly(
             safe(line["DEDUC7"], line["DEDUC7"])
         )
-        person["charity_deductions"] += yearly(safe(line["DEDUC8"], line["DEDUC8"]))
+        person["charity_deductions"] += yearly(
+            safe(line["DEDUC8"], line["DEDUC8"])
+        )
         person["student_loan_deductions"] += yearly(
             safe(line["DEDUC9"], line["DEDUC9"])
         )
@@ -39,7 +49,14 @@ def parse_job(line, person):
         person["profit"] = yearly(line["SEINCAMT"])
         if safe(line["CHECKTAX"]) == 2:
             person["profit"] += yearly(
-                add_up(line, "SEINCAMT", "SENIRAMT", "SETAXAMT", "TAXDAMT", "NIDAMT")
+                add_up(
+                    line, 
+                    "SEINCAMT", 
+                    "SENIRAMT", 
+                    "SETAXAMT", 
+                    "TAXDAMT", 
+                    "NIDAMT"
+                )
             ) + safe(line["SENILAMT"])
 
     person["num_FT_jobs"] += int(safe(line["FTPT"]) == 1)
