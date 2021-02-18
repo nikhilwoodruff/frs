@@ -50,14 +50,15 @@ def parse_job(line, person):
         if safe(line["CHECKTAX"]) == 2:
             person["profit"] += yearly(
                 add_up(
-                    line, 
-                    "SEINCAMT", 
-                    "SENIRAMT", 
-                    "SETAXAMT", 
-                    "TAXDAMT", 
-                    "NIDAMT"
+                    line,
+                    "SEINCAMT",
+                    "SENIRAMT",
+                    "SETAXAMT",
+                    "TAXDAMT",
+                    "NIDAMT",
                 )
-            ) + safe(line["SENILAMT"])
+            )
+            person["profit"] += safe(line["SENILAMT"])
 
     person["num_FT_jobs"] += int(safe(line["FTPT"]) == 1)
     person["num_PT_jobs"] += int(safe(line["FTPT"]) == 2)
