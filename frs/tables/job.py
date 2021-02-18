@@ -1,17 +1,12 @@
 from frs.table_utils import *
-from datetime import datetime
 
 
 def parse_job(line, person):
     if safe(line["ETYPE"]) == 1:
         person["earnings"] += yearly(safe(line["UGRSPAY\n"]))
-        person["pension_deductions"] += yearly(
-            safe(line["DEDUC1"], line["UDEDUC1"])
-        )
+        person["pension_deductions"] += yearly(safe(line["DEDUC1"], line["UDEDUC1"]))
         person["AVC_deductions"] += yearly(safe(line["DEDUC2"], line["DEDUC2"]))
-        person["union_fee_deductions"] += yearly(
-            safe(line["DEDUC3"], line["DEDUC3"])
-        )
+        person["union_fee_deductions"] += yearly(safe(line["DEDUC3"], line["DEDUC3"]))
         person["friendly_society_deductions"] += yearly(
             safe(line["DEDUC4"], line["DEDUC4"])
         )
@@ -22,9 +17,7 @@ def parse_job(line, person):
         person["medical_insurance_deductions"] += yearly(
             safe(line["DEDUC7"], line["DEDUC7"])
         )
-        person["charity_deductions"] += yearly(
-            safe(line["DEDUC8"], line["DEDUC8"])
-        )
+        person["charity_deductions"] += yearly(safe(line["DEDUC8"], line["DEDUC8"]))
         person["student_loan_deductions"] += yearly(
             safe(line["DEDUC9"], line["DEDUC9"])
         )
@@ -45,7 +38,10 @@ def parse_job(line, person):
     else:
         person["profit"] = yearly(line["SEINCAMT"])
         if safe(line["CHECKTAX"]) == 2:
-            person["profit"] += yearly(add_up(line, "SEINCAMT", "SENIRAMT", "SETAXAMT", "TAXDAMT", "NIDAMT")) + safe(line["SENILAMT"])
+            person["profit"] += yearly(
+                add_up(line, "SEINCAMT", "SENIRAMT", "SETAXAMT", "TAXDAMT", "NIDAMT")
+            ) + safe(line["SENILAMT"])
+
     person["num_FT_jobs"] += int(safe(line["FTPT"]) == 1)
     person["num_PT_jobs"] += int(safe(line["FTPT"]) == 2)
 
@@ -81,7 +77,7 @@ JOB_FIELDNAMES = [
     "SAP",
     "SHPP",
     "weekly_unpaid_overtime",
-    "fuel_expenses"
+    "fuel_expenses",
 ]
 
 JOB_ENUMS = {}

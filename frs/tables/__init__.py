@@ -76,7 +76,13 @@ merge = lambda x, y: dict(**x, **y)
 
 COMBINED_DECODE = reduce(merge, DECODE)
 
-COMBINED_ENCODE = {field: {y: x for x, y in list(zip(range(len(mapping.values())), mapping.values())) + [(0, 0)]} for field, mapping in COMBINED_DECODE.items()}
+COMBINED_ENCODE = {
+    field: {
+        y: x
+        for x, y in list(zip(range(len(mapping.values())), mapping.values())) + [(0, 0)]
+    }
+    for field, mapping in COMBINED_DECODE.items()
+}
 
 parse_func = dict(
     accounts=parse_account,

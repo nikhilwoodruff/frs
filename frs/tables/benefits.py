@@ -76,18 +76,7 @@ BENEFITS = {
     111: "SFL_UC",
 }
 
-BENEFIT_NON_WEEKLY_AMOUNTS = [
-    31,
-    32,
-    33,
-    34,
-    35,
-    61,
-    62,
-    81,
-    82,
-    83
-]
+BENEFIT_NON_WEEKLY_AMOUNTS = [31, 32, 33, 34, 35, 61, 62, 81, 82, 83]
 
 JSA_ESA_TYPES = {
     0: "income",
@@ -99,8 +88,6 @@ JSA_ESA_TYPES = {
     6: "contrib",
 }
 
-BENEFITS_FIELDNAMES = list(
-    map(lambda x: x + "_reported", BENEFITS.values())
-)
+BENEFITS_FIELDNAMES = list(map(lambda x: x + "_reported", BENEFITS.values()))
 
 BENEFITS_ENUMS = {}

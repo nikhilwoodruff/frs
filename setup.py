@@ -18,10 +18,7 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    install_requires=[
-        "tqdm",
-        "termcolor"
-    ],
+    install_requires=["tqdm", "termcolor"],
     python_requires=">=3.6",
     entry_points={
         "console_scripts": ["frs=frs.generate_csv:main"],

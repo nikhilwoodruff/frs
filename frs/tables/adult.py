@@ -18,9 +18,7 @@ def parse_adult(line, person):
     person["age"] = safe(line["AGE80"])
 
     # allowances
-    person["alimony_payments_received"] = yearly(
-        safe(line["ALUAMT"], line["ALIAMT"])
-    )
+    person["alimony_payments_received"] = yearly(safe(line["ALUAMT"], line["ALIAMT"]))
     person["allowance_from_friend"] = yearly(line["ALLPAY1"])
     person["allowance_from_org"] = yearly(line["ALLPAY2"])
     person["allowance_from_LA_fostered"] = yearly(line["ALLPAY3"])
@@ -131,7 +129,9 @@ def parse_adult(line, person):
     person["is_employee"] = safe(line["EMPSTAT"]) == 1
     person["is_self_employed"] = safe(line["EMPSTATB"]) == 2
 
-    person["total_benefits"] = yearly(add_up(line, "INDISBEN", "INOTHBEN", "INTXCRED", "INDUC", "INRPINC"))
+    person["total_benefits"] = yearly(
+        add_up(line, "INDISBEN", "INOTHBEN", "INTXCRED", "INDUC", "INRPINC")
+    )
     return person
 
 
@@ -153,9 +153,7 @@ ACCOUNT_ESTIMATES = {
     13: (30001, 30001),
 }
 
-ACCOUNT_ESTIMATES_MEAN = {
-    x: (y[0] + y[1]) / 2 for x, y in ACCOUNT_ESTIMATES.items()
-}
+ACCOUNT_ESTIMATES_MEAN = {x: (y[0] + y[1]) / 2 for x, y in ACCOUNT_ESTIMATES.items()}
 
 
 ABSENCE_REASON = {

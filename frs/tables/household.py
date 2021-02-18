@@ -21,9 +21,7 @@ def parse_household(line, household):
     household["building_insured"] = safe(line["COVOTHS"]) in [1, 2]
     household["contents_insured"] = safe(line["COVOTHS"]) == 2
 
-    household["council_tax_discount"] = COUNCIL_TAX_DISCOUNT[
-        safe(line["CT25D50D"])
-    ]
+    household["council_tax_discount"] = COUNCIL_TAX_DISCOUNT[safe(line["CT25D50D"])]
     household["council_tax_band"] = COUNCIL_TAX_BAND[safe(line["CTBAND"])]
     household["council_tax_benefit"] = yearly(line["CTREBAMT"])
     household["council_tax"] = (
@@ -157,7 +155,7 @@ HOUSEHOLD_FIELDNAMES = [
     "tenure",
     "water_rate",
     "is_social",
-    "HHINC"
+    "HHINC",
 ]
 
 HOUSEHOLD_ENUMS = dict(

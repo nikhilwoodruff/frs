@@ -83,10 +83,7 @@ def adjust_period(value, period_code, target_period_code, is_day_count=False):
         return 0
     if period_code == 0:
         period_code = 1
-    if (
-        period_code not in PERIOD_CODES
-        or target_period_code not in PERIOD_CODES
-    ):
+    if period_code not in PERIOD_CODES or target_period_code not in PERIOD_CODES:
         print("Warning: missing valid period code, writing as 0.")
         return 0
     if is_day_count:
@@ -94,16 +91,12 @@ def adjust_period(value, period_code, target_period_code, is_day_count=False):
     else:
         if period_code != 97:
             period_code = WEEK
-        relative_size = (
-            PERIOD_CODES[target_period_code] / PERIOD_CODES[period_code]
-        )
+        relative_size = PERIOD_CODES[target_period_code] / PERIOD_CODES[period_code]
     return safe(value) * relative_size
 
 
 def yearly(value, from_period=WEEK):
-    return adjust_period(
-        value, period_code=safe(from_period), target_period_code=YEAR
-    )
+    return adjust_period(value, period_code=safe(from_period), target_period_code=YEAR)
 
 
 # Recognising an ID:
@@ -140,9 +133,7 @@ HOURS_CODES_BOUNDS = {
     10: (35, 35),
 }
 
-HOURS_CODES_MEAN_VALUES = {
-    x: (y[0] + y[1]) / 2 for x, y in HOURS_CODES_BOUNDS.items()
-}
+HOURS_CODES_MEAN_VALUES = {x: (y[0] + y[1]) / 2 for x, y in HOURS_CODES_BOUNDS.items()}
 
 PERSON_LEVEL_FILES = [
     "adult",

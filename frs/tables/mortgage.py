@@ -4,13 +4,9 @@ from frs.table_utils import *
 def parse_mortgage(line, household):
     household["original_mortgage_amount"] = safe(line["BORRAMT"])
     household["MPP"] = yearly(
-        safe(line["INCMPAM1"])
-        + safe(line["INCMPAM2"])
-        + safe(line["INCMPAM3"])
+        safe(line["INCMPAM1"]) + safe(line["INCMPAM2"]) + safe(line["INCMPAM3"])
     )
-    household["mortgage_payments"] = yearly(line["INTPRPAY"]) + yearly(
-        line["MORINPAY"]
-    )
+    household["mortgage_payments"] = yearly(line["INTPRPAY"]) + yearly(line["MORINPAY"])
     household["outstanding_mortgage"] = safe(line["MORTLEFT"])
     household["mortgage_term"] = safe(line["MORTEND"])
     household["mortgage_types"] = MORTGAGE_TYPES[safe(line["MORTTYPE"])]

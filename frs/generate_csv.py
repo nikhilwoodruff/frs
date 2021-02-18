@@ -116,20 +116,20 @@ def ensure_folders_exist():
     if "raw" not in os.listdir(path):
         os.makedirs(os.path.join(path, "raw"))
 
+
 def encode_enums(data, name):
     for record in tqdm(data.values(), desc=f"Encoding enums for {name}s"):
         for field in record:
             if field in tables.COMBINED_ENCODE:
                 record[field] = tables.COMBINED_ENCODE[field][record[field]]
 
+
 def write_files(decode_enums=False):
     """
     Write OpenFisca-UK input CSV files.
     """
     person_data, benunit_data, household_data = {}, {}, {}
-    data = dict(
-        person=person_data, benunit=benunit_data, household=household_data
-    )
+    data = dict(person=person_data, benunit=benunit_data, household=household_data)
     for filename in os.listdir(resolve("raw")):
         name = filename.replace(".tab", "")
         if name in tables.parse_func:
@@ -153,11 +153,11 @@ def write_files(decode_enums=False):
                 initial_fields=initial_fields,
                 data=data[entity],
             )
-    
+
     if not decode_enums:
         for entity, entity_data in data.items():
             encode_enums(entity_data, entity)
-        
+
         with open(resolve("key.json"), "w+") as f:
             json.dump(tables.COMBINED_DECODE, f)
 
@@ -180,9 +180,7 @@ def main():
         choices=["status", "gen", "regen", "show"],
         help="The action to take on stored data",
     )
-    parser.add_argument(
-        "--path", required=False, help="The path to the FRS data"
-    )
+    parser.add_argument("--path", required=False, help="The path to the FRS data")
     args = parser.parse_args()
     if args.mode == "status":
         print("FRS status:")
@@ -237,9 +235,7 @@ def main():
         print("Completed generation.")
     elif args.mode == "regen":
         if not existing_raw:
-            print(
-                "No FRS source data stored; use 'frs gen --path [PATH]' to load it."
-            )
+            print("No FRS source data stored; use 'frs gen --path [PATH]' to load it.")
             return
         print("Re-generating OpenFisca-UK input datasets:")
         write_files()
