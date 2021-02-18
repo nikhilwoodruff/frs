@@ -8,6 +8,7 @@ def parse_child(line, person):
 
     # disability
     person["dis_equality_act_core"] = safe(line["DISCORC1"]) == 1
+    person["dis_equality_act_core"] = safe(line["DISACTC1"]) == 1
     person["vision_difficulty"] = safe(line["CDISD01"]) == 1
     person["hearing_difficulty"] = safe(line["CDISD02"]) == 1
     person["mobility_difficulty"] = safe(line["CDISD03"]) == 1
@@ -21,8 +22,7 @@ def parse_child(line, person):
 
     person["bursary_fund"] = yearly(line["CHBFDAMT"])
 
-    person["earnings"] = yearly(line["CHEARNS1"]) + yearly(line["CHEARNS2"])
-    person["unit_or_inv_trusts_income"] = yearly(line["CHEARNS3"])
+    person["earnings"] = yearly(line["CHEARNS"])
 
     person["is_boarder"] = safe(line["CONVBL"]) == 1
     person["is_lodger"] = safe(line["CONVBL"]) == 2

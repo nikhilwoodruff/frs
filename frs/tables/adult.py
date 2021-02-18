@@ -58,6 +58,7 @@ def parse_adult(line, person):
 
     # disability
     person["dis_equality_act_core"] = safe(line["DISCORA1"]) == 1
+    person["dis_equality_act_core"] = safe(line["DISACTA1"]) == 1
     person["vision_difficulty"] = safe(line["DISD01"]) == 1
     person["hearing_difficulty"] = safe(line["DISD02"]) == 1
     person["mobility_difficulty"] = safe(line["DISD03"]) == 1
@@ -94,6 +95,8 @@ def parse_adult(line, person):
     person["care_hours_given"] = HOURS_CODES_MEAN_VALUES[safe(line["HOURTOT"])]
 
     # income
+    person["earnings"] = yearly(line["INEARS"])
+    person["pension_income"] = yearly(line["INPENINC"])
     person["free_TV_license_value"] = yearly(line["INTVLIC"])
     person["FRS_net_income"] = yearly(line["NINDINC"])
 
@@ -389,6 +392,7 @@ ADULT_FIELDNAMES = [
     "is_boarder",
     "is_lodger",
     "dis_equality_act_core",
+    "dis_equality_act_wider",
     "vision_difficulty",
     "hearing_difficulty",
     "mobility_difficulty",
