@@ -3,7 +3,7 @@ from frs.table_utils import *
 
 def parse_job(line, person):
     if safe(line["ETYPE"]) == 1:
-        # person["earnings"] += yearly(safe(line["UGRSPAY\n"]))
+        person["earnings"] += yearly(safe(line["UGRSPAY\n"]))
         person["pension_deduction"] += yearly(safe(line["DEDUC1"], line["UDEDUC1"]))
         person["AVC_deductions"] += yearly(safe(line["DEDUC2"], line["DEDUC2"]))
         person["union_fee_deductions"] += yearly(safe(line["DEDUC3"], line["DEDUC3"]))

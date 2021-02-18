@@ -97,8 +97,6 @@ def parse_adult(line, person):
     person["care_hours_given"] = HOURS_CODES_MEAN_VALUES[safe(line["HOURTOT"])]
 
     # income
-    person["earnings"] = yearly(line["INEARS"])
-    person["pension_income"] = yearly(line["INPENINC"])
     person["free_TV_license_value"] = yearly(line["INTVLIC"])
     person["FRS_net_income"] = yearly(line["NINDINC"])
 
