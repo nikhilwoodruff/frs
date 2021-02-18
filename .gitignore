@@ -6,3 +6,4 @@ frs/README.md
 **/*.pyc
 frs.egg-info
 metadata.json
+debug.log
