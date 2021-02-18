@@ -10,8 +10,8 @@ def parse_asset(line, person):
     return person
 
 
-ASSETS_FIELDNAMES = list(map(lambda x: x + "_value", ACCOUNT_TYPES.values())) + list(
-    map(lambda x: x + "_is_joint", ACCOUNT_TYPES.values())
-)
+ASSETS_FIELDNAMES = list(
+    map(lambda x: x + "_value", ACCOUNT_TYPES.values())
+) + list(map(lambda x: x + "_is_joint", ACCOUNT_TYPES.values()))
 
 ASSETS_ENUMS = {}

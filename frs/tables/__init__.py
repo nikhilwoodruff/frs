@@ -79,7 +79,8 @@ COMBINED_DECODE = reduce(merge, DECODE)
 COMBINED_ENCODE = {
     field: {
         y: x
-        for x, y in list(zip(range(len(mapping.values())), mapping.values())) + [(0, 0)]
+        for x, y in list(zip(range(len(mapping.values())), mapping.values()))
+        + [(0, 0)]
     }
     for field, mapping in COMBINED_DECODE.items()
 }

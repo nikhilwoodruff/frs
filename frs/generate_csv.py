@@ -129,7 +129,9 @@ def write_files(decode_enums=False):
     Write OpenFisca-UK input CSV files.
     """
     person_data, benunit_data, household_data = {}, {}, {}
-    data = dict(person=person_data, benunit=benunit_data, household=household_data)
+    data = dict(
+        person=person_data, benunit=benunit_data, household=household_data
+    )
     for filename in os.listdir(resolve("raw")):
         name = filename.replace(".tab", "")
         if name in tables.parse_func:
@@ -180,7 +182,9 @@ def main():
         choices=["status", "gen", "regen", "show"],
         help="The action to take on stored data",
     )
-    parser.add_argument("--path", required=False, help="The path to the FRS data")
+    parser.add_argument(
+        "--path", required=False, help="The path to the FRS data"
+    )
     args = parser.parse_args()
     if args.mode == "status":
         print("FRS status:")
@@ -235,7 +239,9 @@ def main():
         print("Completed generation.")
     elif args.mode == "regen":
         if not existing_raw:
-            print("No FRS source data stored; use 'frs gen --path [PATH]' to load it.")
+            print(
+                "No FRS source data stored; use 'frs gen --path [PATH]' to load it."
+            )
             return
         print("Re-generating OpenFisca-UK input datasets:")
         write_files()

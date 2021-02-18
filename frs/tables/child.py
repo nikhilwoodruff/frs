@@ -49,7 +49,9 @@ def parse_child(line, person):
     person["is_male"] = safe(line["SEX"]) == 1
     person["is_female"] = safe(line["SEX"]) == 2
 
-    person["tax_free_childcare_paid_in"] = yearly(safe(line["TFCAMT"], line["UTFCAMT"]))
+    person["tax_free_childcare_paid_in"] = yearly(
+        safe(line["TFCAMT"], line["UTFCAMT"])
+    )
     person["tax_free_childcare_paid_out"] = yearly(
         safe(line["TFCOAMT"], line["UTFCOAMT"])
     )

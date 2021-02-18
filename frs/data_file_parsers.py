@@ -54,7 +54,9 @@ def adjust_period(value, period_code=WEEK, target_period_code=YEAR):
     """
     if not exists(value) or not exists(period_code):
         return 0
-    relative_size = PERIOD_CODES[target_period_code] / PERIOD_CODES[period_code]
+    relative_size = (
+        PERIOD_CODES[target_period_code] / PERIOD_CODES[period_code]
+    )
     return float(value) * relative_size
 
 
