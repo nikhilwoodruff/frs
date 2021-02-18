@@ -116,8 +116,13 @@ def ensure_folders_exist():
     if "raw" not in os.listdir(path):
         os.makedirs(os.path.join(path, "raw"))
 
+def encode_enums(data, name):
+    for record in tqdm(data.values(), desc=f"Encoding enums for {name}s"):
+        for field in record:
+            if field in tables.COMBINED_ENCODE:
+                record[field] = tables.COMBINED_ENCODE[field][record[field]]
 
-def write_files():
+def write_files(decode_enums=False):
     """
     Write OpenFisca-UK input CSV files.
     """
@@ -148,6 +153,13 @@ def write_files():
                 initial_fields=initial_fields,
                 data=data[entity],
             )
+    
+    if not decode_enums:
+        for entity, entity_data in data.items():
+            encode_enums(entity_data, entity)
+        
+        with open(resolve("key.json"), "w+") as f:
+            json.dump(tables.COMBINED_DECODE, f)
 
     write_file(person_data, "person.csv", tables.PERSON_FIELDNAMES)
     write_file(benunit_data, "benunit.csv", tables.BENUNIT_FIELDNAMES)

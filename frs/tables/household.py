@@ -34,6 +34,8 @@ def parse_household(line, household):
         line["NIHSCOST"]
     )
 
+    household["HHINC"] = yearly(line["HHINC"])
+
     household["household_weight"] = safe(line["GROSS4"])
 
     household["region"] = REGIONS[safe(line["GVTREGNO"])]
@@ -61,7 +63,7 @@ def parse_household(line, household):
 
 
 TENURE = {
-    NO_DATA: "owned",
+    NO_DATA: "unknown",
     1: "owned",
     2: "mortgage",
     3: "part_own_part_rent",
@@ -71,7 +73,7 @@ TENURE = {
 }
 
 HOUSEHOLD_TYPE = {
-    NO_DATA: "house",
+    NO_DATA: "unknown",
     1: "house",
     2: "flat",
     3: "room",
@@ -79,7 +81,7 @@ HOUSEHOLD_TYPE = {
 }
 
 COUNTRIES = {
-    NO_DATA: "england",
+    NO_DATA: "unknown",
     1: "england",
     2: "wales",
     3: "scotland",
@@ -87,7 +89,6 @@ COUNTRIES = {
 }
 
 REGIONS = {
-    NO_DATA: "unknown",
     1: "north_east",
     2: "north_west",
     4: "yorkshire",
@@ -156,6 +157,7 @@ HOUSEHOLD_FIELDNAMES = [
     "tenure",
     "water_rate",
     "is_social",
+    "HHINC"
 ]
 
 HOUSEHOLD_ENUMS = dict(

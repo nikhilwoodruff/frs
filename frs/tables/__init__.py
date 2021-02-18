@@ -1,3 +1,5 @@
+from functools import reduce
+
 from frs.tables.adult import *
 from frs.tables.accounts import *
 from frs.tables.assets import *
@@ -45,6 +47,36 @@ HOUSEHOLD_FIELDNAMES = (
     + RENT_CONTRIBUTION_FIELDNAMES
     + RENTER_FIELDNAMES
 )
+
+DECODE = [
+    ACCOUNTS_ENUMS,
+    ADULT_ENUMS,
+    ASSETS_ENUMS,
+    BENEFITS_ENUMS,
+    BENUNIT_ENUMS,
+    CARE_ENUMS,
+    CHILDCARE_ENUMS,
+    ENDOWMENT_ENUMS,
+    EXTCHILD_ENUMS,
+    GOVPAY_ENUMS,
+    HOUSEHOLD_ENUMS,
+    JOB_ENUMS,
+    MAINTENANCE_ENUMS,
+    MORTGAGE_CONTRIBUTION_ENUMS,
+    MORTGAGE_ENUMS,
+    ODDJOB_ENUMS,
+    OWNER_ENUMS,
+    PENSION_PROVISION_ENUMS,
+    PENSION_ENUMS,
+    RENT_CONTRIBUTION_ENUMS,
+    RENTER_ENUMS,
+]
+
+merge = lambda x, y: dict(**x, **y)
+
+COMBINED_DECODE = reduce(merge, DECODE)
+
+COMBINED_ENCODE = {field: {y: x for x, y in list(zip(range(len(mapping.values())), mapping.values())) + [(0, 0)]} for field, mapping in COMBINED_DECODE.items()}
 
 parse_func = dict(
     accounts=parse_account,

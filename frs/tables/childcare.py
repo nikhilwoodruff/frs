@@ -18,4 +18,4 @@ CHILDCARE_FIELDNAMES = [
     "has_registered_childcare",
 ]
 
-CHILD_CARE_ENUMS = {}
+CHILDCARE_ENUMS = {}

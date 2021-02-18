@@ -19,7 +19,7 @@ def parse_mortgage(line, household):
 
 
 MORTGAGE_TYPES = {
-    NO_DATA: "repayment",
+    NO_DATA: "unknown",
     1: "endowment",
     2: "repayment",
     3: "pension",

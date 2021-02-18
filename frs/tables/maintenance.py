@@ -7,4 +7,4 @@ def parse_maintenance(line, person):
 
 MAINTENANCE_FIELDNAMES = []
 
-MAINTENANCE_ENUMS = []
+MAINTENANCE_ENUMS = {}

@@ -10,14 +10,14 @@ def parse_renter(line, household):
 
 
 FURNISH_STATUS = {
-    NO_DATA: "no_data",
+    NO_DATA: "unknown",
     1: "furnished",
     2: "partially_furnished",
     3: "unfirnished",
 }
 
 LANDLORD = {
-    NO_DATA: "none",
+    NO_DATA: "unknown",
     1: "local_authority",
     2: "housing_association",
     3: "employer_org",
@@ -27,6 +27,6 @@ LANDLORD = {
     7: "other",
 }
 
-RENTER_FIELDNAMES = ["furnished", "landlord", "full_rent", "rent_paid"]
+RENTER_FIELDNAMES = ["furnished", "landlord", "full_rent"]
 
 RENTER_ENUMS = dict(furnished=FURNISH_STATUS, landlord=LANDLORD)

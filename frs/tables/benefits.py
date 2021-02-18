@@ -3,6 +3,10 @@ from frs.tables.accounts import ACCOUNT_TYPES
 
 
 def parse_benefit(line, person):
+    if safe(line["BENEFIT"]) in BENEFIT_NON_WEEKLY_AMOUNTS:
+        amount = safe(line["BENAMT"], line["NOTUSAMT"])
+    else:
+        amount = yearly(safe(line["BENAMT"], line["NOTUSAMT"]))
     if safe(line["BENEFIT"]) in list(BENEFITS) + [14, 16]:
         if safe(line["BENEFIT"]) in BENEFITS:
             benefit = BENEFITS[safe(line["BENEFIT"])]
@@ -12,9 +16,7 @@ def parse_benefit(line, person):
         elif safe(line["BENEFIT"]) == 16:
             ESA_type = JSA_ESA_TYPES[int(safe(line["VAR2"]))]
             benefit = f"ESA_{ESA_type}"
-        amount = yearly(safe(line["BENAMT"], line["NOTUSAMT"]))
         person[benefit + "_reported"] = amount
-        person["total_benefits"] += amount
     return person
 
 
@@ -74,6 +76,19 @@ BENEFITS = {
     111: "SFL_UC",
 }
 
+BENEFIT_NON_WEEKLY_AMOUNTS = [
+    31,
+    32,
+    33,
+    34,
+    35,
+    61,
+    62,
+    81,
+    82,
+    83
+]
+
 JSA_ESA_TYPES = {
     0: "income",
     1: "income",
@@ -86,6 +101,6 @@ JSA_ESA_TYPES = {
 
 BENEFITS_FIELDNAMES = list(
     map(lambda x: x + "_reported", BENEFITS.values())
-) + ["total_benefits"]
+)
 
 BENEFITS_ENUMS = {}

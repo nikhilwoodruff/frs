@@ -96,9 +96,6 @@ def parse_adult(line, person):
     person["care_hours_given"] = HOURS_CODES_MEAN_VALUES[safe(line["HOURTOT"])]
 
     # income
-    # person["profit"] = yearly(line["INCSEO2"]) # take from JOB instead
-    # person["earnings"] = yearly(line["INEARNS"]) # take from JOB instead
-    # person["pension_income"] = yearly(line["INPENINC"]) # take from PENSION instead
     person["free_TV_license_value"] = yearly(line["INTVLIC"])
     person["FRS_net_income"] = yearly(line["NINDINC"])
 
@@ -130,6 +127,11 @@ def parse_adult(line, person):
     person["hours"] = yearly(line["TOTHOURS"])
 
     person["misc_income"] = yearly(line["INRINC"])
+
+    person["is_employee"] = safe(line["EMPSTAT"]) == 1
+    person["is_self_employed"] = safe(line["EMPSTATB"]) == 2
+
+    person["total_benefits"] = yearly(add_up(line, "INDISBEN", "INOTHBEN", "INTXCRED", "INDUC", "INRPINC"))
     return person
 
 
@@ -157,7 +159,7 @@ ACCOUNT_ESTIMATES_MEAN = {
 
 
 ABSENCE_REASON = {
-    NO_DATA: "none",
+    NO_DATA: "unknown",
     1: "pattern_of_shifts",
     2: "illness_or_accident",
     3: "holiday",
@@ -171,7 +173,7 @@ ABSENCE_REASON = {
 }
 
 ABSENCE_PAY = {
-    NO_DATA: "none",
+    NO_DATA: "unknown",
     1: "full_pay",
     2: "over_half_pay",
     3: "under_half_pay",
@@ -179,7 +181,7 @@ ABSENCE_PAY = {
 }
 
 QUALIFICATIONS = {
-    NO_DATA: "none",
+    NO_DATA: "unknown",
     1: "doctorate",
     2: "postgraduate_degree",
     3: "degree",
@@ -269,7 +271,7 @@ QUALIFICATIONS = {
 }
 
 EDU_TYPE = {
-    NO_DATA: "none",
+    NO_DATA: "unknown",
     1: "school_full_time",
     2: "school_part_time",
     3: "sandwich_course",
@@ -283,7 +285,7 @@ EDU_TYPE = {
 }
 
 EMPLOYMENT_STATUS = {
-    NO_DATA: "none",
+    NO_DATA: "unknown",
     1: "self_employed",
     2: "FT_employee",
     3: "PT_employee",
@@ -376,7 +378,6 @@ ADULT_FIELDNAMES = [
     "num_survivor_pensions",
     "num_annuities",
     "num_trusts",
-    "absent_partner_payment",
     "received_babybox",
     "person_id",
     "benunit_id",
@@ -432,6 +433,9 @@ ADULT_FIELDNAMES = [
     "hours",
     "misc_income",
     "is_married",
+    "total_benefits",
+    "is_employee",
+    "is_self_employed",
 ]
 
 ADULT_ENUMS = dict(
