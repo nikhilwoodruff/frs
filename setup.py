@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="frs",  # Replace with your own username
-    version="0.1.0",
+    version="0.2.0",
     author="UBI Center",
     author_email="nikhil.woodruff@ubicenter.org",
     description="A package for parsing Family Resources Survey microdata for use with OpenFisca-UK",
@@ -20,6 +20,6 @@ setuptools.setup(
     ],
     python_requires=">=3.7",
     entry_points={
-        "console_scripts": ["frs=frs.generate_csv:main"],
+        "console_scripts": ["frs=frs.main:main"],
     },
 )
