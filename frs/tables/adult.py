@@ -1,6 +1,7 @@
 from frs.dataset import Table, Person, BenUnit, Household
 from frs.utils import yearly, add
 
+
 class Adult(Table):
     enums = {}
     entity = Person
@@ -28,14 +29,14 @@ class Adult(Table):
         person["is_household_head"] = int(line["PERSON"]) == 1
         person["is_benunit_head"] = int(line["UPERSON"]) == 1
         person["FRS_net_income"] = (
-            yearly(line["NINDINC"])
-            - person["misc_income"]
+            yearly(line["NINDINC"]) - person["misc_income"]
         )
         person["student_loan_repayment"] = line["SLREPAMT"]
         person["registered_disabled"] = line["LAREG"] == 1
         person["dis_equality_act_core"] = line["DISCORA1"] == 1
         person["dis_equality_act_wider"] = line["DISACTA1"] == 1
         return person
+
 
 CARE_HOURS_CODES = {
     0: 0,

@@ -16,6 +16,7 @@ import pandas as pd
 
 __version__ = "0.2.0"
 
+
 def get_args():
     parser = argparse.ArgumentParser(
         description="Utility for managing Family Resources Survey microdata"
@@ -30,6 +31,7 @@ def get_args():
     )
     args = parser.parse_args()
     return args
+
 
 def run_status():
     tab_files = os.listdir(resolve("tab"))
@@ -64,6 +66,7 @@ def run_status():
     else:
         print(colored("N/A", "yellow"))
 
+
 def import_files(path: Path):
     filenames = [
         filename
@@ -80,12 +83,15 @@ def import_files(path: Path):
         )
     print("Stored FRS source files successfully.")
 
+
 def generate_csv(path: Path = resolve("tab")):
     dataset = Dataset(tables)
     entity_data, fieldnames = dataset.parse()
     for entity, data in entity_data.items():
         name = entity.__name__.lower() + ".csv"
-        with open(resolve("csv") / name, "w", encoding="utf-8", newline="") as f:
+        with open(
+            resolve("csv") / name, "w", encoding="utf-8", newline=""
+        ) as f:
             writer = DictWriter(f, fieldnames=fieldnames[entity])
             writer.writeheader()
             for item in tqdm(data.entries.values(), desc=f"Writing {name}"):
@@ -95,6 +101,7 @@ def generate_csv(path: Path = resolve("tab")):
                 writer.writerow(item)
     with open(resolve("metadata.json"), "w+") as f:
         json.dump(dict(version=__version__), f)
+
 
 def main():
     ensure_folders_exist()
@@ -122,6 +129,7 @@ def main():
         print("Completed generation.")
     elif args.mode == "show":
         webbrowser.open("file:///" + resolve("."))
+
 
 def load():
     ensure_folders_exist()

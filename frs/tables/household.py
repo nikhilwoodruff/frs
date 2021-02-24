@@ -1,6 +1,7 @@
 from frs.dataset import Table, Person, BenUnit, Household
 from frs.utils import yearly, add
 
+
 class HHold(Table):
     enums = {}
     entity = Household
@@ -16,7 +17,9 @@ class HHold(Table):
         household["is_shared"] = line["HHSTAT"] == 2
         household["housing_costs"] = line["GBHSCOST"] + line["NIHSCOST"]
         band = line["CTBAND"]
-        household["council_tax"] = line["CTANNUAL"] or AVERAGE_COUNCIL_TAX[int(band - 1)]
+        household["council_tax"] = (
+            line["CTANNUAL"] or AVERAGE_COUNCIL_TAX[int(band - 1)]
+        )
         household["is_social"] = line["PTENTYP2"] in [1, 2]
         household["region"] = REGIONS_TO_NUM[GOVTREGNO[int(line["GVTREGNO"])]]
         return household
@@ -25,7 +28,6 @@ class HHold(Table):
 COUNTRY = {1: "ENGLAND", 2: "WALES", 3: "SCOTLAND", 4: "NI"}
 
 AVERAGE_COUNCIL_TAX = [1114, 1300, 1486, 1671, 2043, 2414, 2786, 3343, 3900, 0]
-
 
 
 GOVTREGNO = {

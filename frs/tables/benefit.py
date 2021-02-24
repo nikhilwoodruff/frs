@@ -140,4 +140,3 @@ class Benefit(Table):
             if code == 16:
                 person["ESA_income_reported_personal"] = amount
         return person, benunit
-

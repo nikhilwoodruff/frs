@@ -1,6 +1,7 @@
 from frs.dataset import Table, Person, BenUnit, Household
 from frs.utils import yearly, add
 
+
 class Job(Table):
     enums = {}
     entity = Person

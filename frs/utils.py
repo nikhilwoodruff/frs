@@ -25,6 +25,7 @@ PERIOD_CODES = {
     97: 1000,
 }
 
+
 def exists(field):
     """Determines if there is a numeric value in the field
 
@@ -63,6 +64,7 @@ def add(line, *fieldnames):
         float: The sum of valid fields
     """
     return sum(map(safe, map(lambda fieldname: line[fieldname], fieldnames)))
+
 
 PERIOD_CODES = {
     1: 1,
@@ -104,11 +106,14 @@ def adjust_period(value, period_code=WEEK, target_period_code=YEAR):
     )
     return value * relative_size
 
+
 def yearly(value):
     return adjust_period(value, WEEK, YEAR)
 
+
 def resolve(filename):
-    return Path(os.path.dirname(__file__)) /  filename
+    return Path(os.path.dirname(__file__)) / filename
+
 
 def clean_dirs(output_dir):
     """
@@ -117,6 +122,7 @@ def clean_dirs(output_dir):
     if os.path.exists(output_dir):
         shutil.rmtree(output_dir)
     os.makedirs(output_dir)
+
 
 def ensure_folders_exist():
     path = os.path.dirname(__file__)

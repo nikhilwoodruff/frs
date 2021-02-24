@@ -5,6 +5,7 @@ from pathlib import Path
 from frs.utils import resolve
 from functools import wraps
 
+
 class Table:
     fieldnames = []
     enums = {}
@@ -17,6 +18,7 @@ class Table:
     def parse(entity: dict, line: dict) -> dict:
         return NotImplementedError()
 
+
 class Entity:
     def __init__(self):
         self.entries = {}
@@ -25,20 +27,24 @@ class Entity:
     def id(line: dict) -> int:
         return NotImplementedError()
 
+
 class Person(Entity):
     @staticmethod
     def id(line: dict) -> int:
         return 1000000 + int(line["sernum"]) * 10 + int(line["PERSON"])
+
 
 class BenUnit(Entity):
     @staticmethod
     def id(line: dict) -> int:
         return 2000000 + int(line["sernum"]) * 10 + int(line["BENUNIT"])
 
+
 class Household(Entity):
     @staticmethod
     def id(line: dict) -> int:
         return 3000000 + int(line["sernum"]) * 10
+
 
 class Dataset:
     def __init__(self, tables: List[Table]):
@@ -50,7 +56,7 @@ class Dataset:
             elif issubclass(table.entity, Entity):
                 self.entities += [table.entity]
         self.entities = list(set(self.entities))
-    
+
     def parse(self) -> dict:
         data = {}
         fieldnames = {}
@@ -66,8 +72,14 @@ class Dataset:
                     fieldnames[entity] += table.fieldnames
                 elif isinstance(table.fieldnames, dict):
                     fieldnames[entity] += table.fieldnames[entity]
-            with open(Path(resolve(table.folder)) / table.filename, encoding="utf-8") as f:
-                reader = DictReader(f, fieldnames=next(f).split("\t"), delimiter=table.delimiter)
+            with open(
+                Path(resolve(table.folder)) / table.filename, encoding="utf-8"
+            ) as f:
+                reader = DictReader(
+                    f,
+                    fieldnames=next(f).split("\t"),
+                    delimiter=table.delimiter,
+                )
                 first_line = True
                 for line in tqdm(reader, desc="Reading " + table.filename):
                     identities = []
@@ -81,7 +93,9 @@ class Dataset:
                     result = table.parse(*entities, SafeDict(line))
                     if not isinstance(result, tuple):
                         result = (result,)
-                    for entity, identity, res in zip(table_entities, identities, result):
+                    for entity, identity, res in zip(
+                        table_entities, identities, result
+                    ):
                         data[entity].entries[identity] = res
                         if first_line:
                             fieldnames[entity] += list(res.keys())
@@ -89,6 +103,7 @@ class Dataset:
         for entity in self.entities:
             fieldnames[entity] = list(set(fieldnames[entity]))
         return data, fieldnames
+
 
 class SafeDict(dict):
     def __getitem__(self, item):
