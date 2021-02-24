@@ -1,1 +1,1 @@
-from frs.generate_csv import load
+from frs.main import load
