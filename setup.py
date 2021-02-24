@@ -1,4 +1,13 @@
 import setuptools
+import os
+
+libFolder = os.path.dirname(os.path.realpath(__file__))
+requirementPath = libFolder + '/requirements.txt'
+install_requires = []
+
+if os.path.isfile(requirementPath):
+    with open(requirementPath) as f:
+        install_requires = f.read().splitlines()
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
@@ -22,4 +31,5 @@ setuptools.setup(
     entry_points={
         "console_scripts": ["frs=frs.main:main"],
     },
+    install_requires=install_requires
 )
