@@ -2,7 +2,7 @@ import setuptools
 import os
 
 libFolder = os.path.dirname(os.path.realpath(__file__))
-requirementPath = libFolder + '/requirements.txt'
+requirementPath = libFolder + "/requirements.txt"
 install_requires = []
 
 if os.path.isfile(requirementPath):
@@ -31,5 +31,5 @@ setuptools.setup(
     entry_points={
         "console_scripts": ["frs=frs.main:main"],
     },
-    install_requires=install_requires
+    install_requires=install_requires,
 )
