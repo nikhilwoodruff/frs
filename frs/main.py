@@ -31,7 +31,10 @@ def get_args():
         "--path", required=False, help="The path to the FRS data"
     )
     parser.add_argument(
-        "--synth", required=False, action="store_true", help="Whether to download a small synthetic example output dataset instead of loading in microdata"
+        "--synth",
+        required=False,
+        action="store_true",
+        help="Whether to download a small synthetic example output dataset instead of loading in microdata",
     )
     args = parser.parse_args()
     return args
@@ -110,8 +113,9 @@ def generate_csv(path: Path = resolve("tab")):
 SYNTH_URLS = {
     "person.csv": "https://github.com/nikhilwoodruff/example-frs/raw/master/dataset/person.csv",
     "benunit.csv": "https://github.com/nikhilwoodruff/example-frs/raw/master/dataset/benunit.csv",
-    "household.csv": "https://github.com/nikhilwoodruff/example-frs/raw/master/dataset/household.csv"
+    "household.csv": "https://github.com/nikhilwoodruff/example-frs/raw/master/dataset/household.csv",
 }
+
 
 def get_synth():
     print("Retrieving example dataset.")
@@ -120,6 +124,7 @@ def get_synth():
             response = requests.get(url)
             f.write(response.content)
     print("Successfully downloaded dataset.")
+
 
 def main():
     ensure_folders_exist()
