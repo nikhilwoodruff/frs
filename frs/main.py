@@ -160,11 +160,12 @@ def main():
 def load():
     ensure_folders_exist()
     if not os.listdir(resolve("csv")) and not os.listdir(resolve("tab")):
-        raise Exception(
-            "No OpenFisca-UK input files found, and no FRS source data found either. Load the TAB files with 'frs gen --path [PATH]'."
+        warnings.warn(
+            "No OpenFisca-UK input files found, and no FRS source data found either. Downloading the sample dataset instead."
         )
+        get_synth()
     elif not os.listdir(resolve("csv")):
-        raise warnings.warn(
+        warnings.warn(
             "No OpenFisca-UK-compatible data files found, regenerating from FRS TAB sources."
         )
         generate_csv()
