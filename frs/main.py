@@ -13,6 +13,7 @@ from pathlib import Path
 from frs.dataset import Dataset
 from frs.tables import tables
 import pandas as pd
+import requests
 
 __version__ = "0.2.0"
 
@@ -28,6 +29,9 @@ def get_args():
     )
     parser.add_argument(
         "--path", required=False, help="The path to the FRS data"
+    )
+    parser.add_argument(
+        "--synth", required=False, action="store_true", help="Whether to download a small synthetic example output dataset instead of loading in microdata"
     )
     args = parser.parse_args()
     return args
@@ -103,12 +107,29 @@ def generate_csv(path: Path = resolve("tab")):
         json.dump(dict(version=__version__), f)
 
 
+SYNTH_URLS = {
+    "person.csv": "https://github.com/nikhilwoodruff/example-frs/raw/master/dataset/person.csv",
+    "benunit.csv": "https://github.com/nikhilwoodruff/example-frs/raw/master/dataset/benunit.csv",
+    "household.csv": "https://github.com/nikhilwoodruff/example-frs/raw/master/dataset/household.csv"
+}
+
+def get_synth():
+    print("Retrieving example dataset.")
+    for filename, url in SYNTH_URLS.items():
+        with open(resolve("csv") / filename, "wb") as f:
+            response = requests.get(url)
+            f.write(response.content)
+    print("Successfully downloaded dataset.")
+
 def main():
     ensure_folders_exist()
     args = get_args()
     if args.mode == "status":
         run_status()
     elif args.mode == "gen":
+        if args.synth:
+            get_synth()
+            return
         if not args.path or not os.path.exists(args.path):
             print("Please specify a valid path to FRS TAB files.")
             return
