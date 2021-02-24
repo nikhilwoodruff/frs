@@ -1,11 +1,20 @@
 import setuptools
+import os
+
+libFolder = os.path.dirname(os.path.realpath(__file__))
+requirementPath = libFolder + "/requirements.txt"
+install_requires = []
+
+if os.path.isfile(requirementPath):
+    with open(requirementPath) as f:
+        install_requires = f.read().splitlines()
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
     name="frs",  # Replace with your own username
-    version="0.1.0",
+    version="0.2.0",
     author="UBI Center",
     author_email="nikhil.woodruff@ubicenter.org",
     description="A package for parsing Family Resources Survey microdata for use with OpenFisca-UK",
@@ -20,6 +29,7 @@ setuptools.setup(
     ],
     python_requires=">=3.7",
     entry_points={
-        "console_scripts": ["frs=frs.generate_csv:main"],
+        "console_scripts": ["frs=frs.main:main"],
     },
+    install_requires=install_requires,
 )
